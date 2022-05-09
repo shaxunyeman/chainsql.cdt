@@ -1,3 +1,3 @@
 # chainsqlWasmVM
 
-A interpreter for Wasm in chainsqld
+An interpreter for Wasm in chainsqld
