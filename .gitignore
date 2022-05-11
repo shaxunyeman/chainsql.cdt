@@ -1,0 +1,4 @@
+/build*
+/example/build*
+.DS_Store
+.vscode
