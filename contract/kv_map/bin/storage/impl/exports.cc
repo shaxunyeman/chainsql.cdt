@@ -205,7 +205,8 @@ extern "C"
     int32_t kv_it_key(uint64_t itr, uint32_t offset, void *dest, uint32_t size, uint32_t &actual_size)
     {
         HANDLE(itr)
-        std::string key = handle->index->first;
+        uint32_t prefix_size = handle->prefix.size();
+        std::string key = handle->index->first.substr(prefix_size);
         if(size >= key.size()) {
             std::memcpy(dest, key.c_str(), key.size());
         }

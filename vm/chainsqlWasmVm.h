@@ -30,9 +30,9 @@ public:
     {
         invoke(
             "apply", 
-            cb->action().code().value,
-            cb->action().code().value,
-            cb->action().function().value);
+            cb->Action().code().value,
+            cb->Action().code().value,
+            cb->Action().function().value);
 
         return cb->result();
     }

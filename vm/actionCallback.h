@@ -37,7 +37,7 @@ namespace chainsql
             mod.link("*", "set_action_return_value", &set_action_return_value);
         }
 
-        const action& action() const {
+        const action& Action() const {
             return action_;
         }
 
@@ -89,7 +89,7 @@ namespace chainsql
             mod.link_optional("*", "set_action_return_value", &set_action_return_value);
         }
 
-        const action& action() const {
+        const action& Action() const {
             return action_;
         }
 
