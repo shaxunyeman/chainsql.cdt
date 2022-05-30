@@ -1,15 +1,17 @@
-NAME=hello
+NAME=storage
 SRC=$(NAME).cc
 WASM=$(NAME).wasm
 HEADER=$(NAME).wasm.h
-EMCC_FLAGS=-O3 -Wl,--no-entry -Wl,--export=apply -Wl,--allow-undefined \
+EMCC_FLAGS=-O0 -Wl,--no-entry -Wl,--export=apply -Wl,--allow-undefined \
 			-s STANDALONE_WASM -s ERROR_ON_UNDEFINED_SYMBOLS=0 \
 			-std=c++17 \
+			-I ./ \
 			-I ../ \
 			-I ../../vm/ \
 			-I ../../contract/ \
 			-I ../../libraries	\
 			-I ../../libraries/boost/include	\
+			-I ../../libraries/meta_refl/include	\
 			-v
 
 all: $(HEADER)

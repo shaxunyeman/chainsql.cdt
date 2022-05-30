@@ -48,11 +48,15 @@ namespace wasm3 {
         template<typename T> struct m3_type_to_sig;
         template<> struct m3_type_to_sig<int32_t> : m3_sig<'i'> {};
         template<> struct m3_type_to_sig<int64_t> : m3_sig<'I'> {};
+        template<> struct m3_type_to_sig<uint32_t> : m3_sig<'i'> {};
+        template<> struct m3_type_to_sig<uint64_t> : m3_sig<'I'> {};
         template<> struct m3_type_to_sig<float>   : m3_sig<'f'> {};
         template<> struct m3_type_to_sig<double>  : m3_sig<'F'> {};
         template<> struct m3_type_to_sig<void>    : m3_sig<'v'> {};
         template<> struct m3_type_to_sig<void *>  : m3_sig<'*'> {};
         template<> struct m3_type_to_sig<const void *> : m3_sig<'*'> {};
+        template<> struct m3_type_to_sig<char *>  : m3_sig<'*'> {};
+        template<> struct m3_type_to_sig<const char *> : m3_sig<'*'> {};
 
 
         template<typename Ret, typename ... Args>

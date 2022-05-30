@@ -9,7 +9,13 @@ set(sources
     "./libraries/native/intrinsics.cc"
 )
 
-add_library(${target} STATIC ${sources})
+set(headers
+    "./vm/chainsqlWasmVm.h"
+    "./vm/actionCallback.h"
+    "./vm/action.h"
+)
+
+add_library(${target} STATIC ${sources} ${headers})
 
 include_directories(
     "."

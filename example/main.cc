@@ -1,8 +1,8 @@
 #include <iostream>
 #include <string>
 #include <tuple>
-#include <chainsqlWasmVm.h>
 
+#include "chainsqlWasmVm.h"
 #include "chainsqlib/core/name.h"
 #include "chainsqlib/core/datastream.h"
 #include "native/chainsql/intrinsics.hpp"
@@ -72,7 +72,7 @@ void execute_hello_contract()
     mod.link("*", "chainsql_assert", chainsql_assert);
 
     chainsql::native::intrinsics::get().set_intrinsic<chainsql::native::intrinsics::chainsql_memcpy>(
-        [&](void* dst, int64_t src, int32_t len)
+        [&](void* dst, uint64_t src, uint32_t len)
         {
             void* src_p = (void*)src;
             std::memcpy(dst, src_p, len);

@@ -11,6 +11,8 @@ namespace chainsql
     struct name
     {
     public:
+        enum class raw : uint64_t {};
+
         /**
          * Construct a new name
          *
@@ -28,6 +30,18 @@ namespace chainsql
          */
         constexpr explicit name(uint64_t v)
             : value(v)
+        {
+        }
+
+        /**
+         * Construct a new name given a scoped enumerated type of raw (uint64_t).
+         *
+         * @brief Construct a new name object initialising value with r
+         * @param r - The raw value which is a scoped enumerated type of unit64_t
+         *
+         */
+        constexpr explicit name(name::raw r)
+            : value(static_cast<uint64_t>(r))
         {
         }
 
@@ -72,6 +86,20 @@ namespace chainsql
             auto end = write_as_string(buffer, buffer + sizeof(buffer));
             return {buffer, end};
         }
+
+        /**
+         * Casts a name to raw
+         *
+         * @return Returns an instance of raw based on the value of a name
+         */
+        constexpr operator raw() const { return raw(value); }
+
+        /**
+         * Explicit cast to bool of the uint64_t value of the name
+         *
+         * @return Returns true if the name is set to the default value of 0 else true.
+         */
+        constexpr explicit operator bool() const { return value != 0; }
 
         /**
          * Equivalency operator. Returns true if a == b (are the same)
