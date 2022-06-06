@@ -74,7 +74,7 @@ configure_file(${CMAKE_SOURCE_DIR}/modules/ChainSQLCDTMacros.cmake.in ${CMAKE_BI
 configure_file(${CMAKE_SOURCE_DIR}/modules/chainsqlWasmToolchain.cmake.in ${CMAKE_BINARY_DIR}/modules/chainsqlWasmToolchainPackage.cmake @ONLY)
 configure_file(${CMAKE_SOURCE_DIR}/modules/chainsql.cdt-config.cmake ${CMAKE_BINARY_DIR}/modules/chainsql.cdt-config.cmake.package @ONLY)
 
-#include(modules/LibrariesExternalProject.txt)
+include(modules/LibrariesExternalProject.txt)
 
 include(modules/InstallCDT.cmake)
 
@@ -84,6 +84,14 @@ install(FILES ${CMAKE_BINARY_DIR}/chainsql.imports DESTINATION ${CDT_INSTALL_PRE
 configure_file(${CMAKE_SOURCE_DIR}/scripts/ricardeos/ricardeos.py ${CMAKE_BINARY_DIR}/scripts/ricardeos.py COPYONLY)
 install(FILES ${CMAKE_BINARY_DIR}/scripts/ricardeos.py DESTINATION ${CDT_INSTALL_PREFIX}/scripts)
 
-add_subdirectory(vm)
-add_subdirectory(wasm3)
-add_subdirectory(example)
+# add licenses
+configure_file(${CMAKE_SOURCE_DIR}/chainsql_llvm/LICENSE.TXT ${CMAKE_BINARY_DIR}/licenses/llvm.license COPYONLY)
+configure_file(${CMAKE_SOURCE_DIR}/libraries/boost/boost.license ${CMAKE_BINARY_DIR}/licenses/boost.license COPYONLY)
+configure_file(${CMAKE_SOURCE_DIR}/libraries/meta_refl/LICENSE ${CMAKE_BINARY_DIR}/licenses/meta_refl.license COPYONLY)
+configure_file(${CMAKE_SOURCE_DIR}/tools/external/wabt/LICENSE ${CMAKE_BINARY_DIR}/licenses/wabt.license COPYONLY)
+configure_file(${CMAKE_SOURCE_DIR}/tools/jsoncons/LICENSE ${CMAKE_BINARY_DIR}/licenses/jsoncons.license COPYONLY)
+configure_file(${CMAKE_SOURCE_DIR}/LICENSE ${CMAKE_BINARY_DIR}/licenses/chainsql.cdt.license COPYONLY)
+
+#add_subdirectory(vm)
+#add_subdirectory(wasm3)
+#add_subdirectory(example)
