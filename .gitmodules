@@ -1,3 +1,4 @@
 [submodule "chainsql_llvm"]
 	path = chainsql_llvm
 	url = https://gitlab.peersafe.cn/chainsql/chainsql_llvm.git
+	branch = develop

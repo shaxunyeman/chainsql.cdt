@@ -9,10 +9,10 @@
 #include "clang/AST/Expr.h"
 #include "clang/Basic/Builtins.h"
 #include "llvm/Support/FileSystem.h"
-#include "eosio/utils.hpp"
-#include "eosio/gen.hpp"
-#include "eosio/whereami/whereami.hpp"
-#include "eosio/abi.hpp"
+#include "chainsql/utils.hpp"
+#include "chainsql/gen.hpp"
+#include "chainsql/whereami/whereami.hpp"
+#include "chainsql/abi.hpp"
 
 #include <exception>
 #include <iostream>
@@ -28,8 +28,8 @@
 using namespace clang::tooling;
 using namespace clang::ast_matchers;
 using namespace llvm;
-using namespace eosio;
-using namespace eosio::cdt;
+using namespace chainsql;
+using namespace chainsql::cdt;
 
 struct project {
    std::string project_name;
@@ -53,8 +53,8 @@ struct project {
                            "   print_f(\"Name : %\\n\",nm);\n"
                            "}";
 
-   const std::string hpp = "#include <eosio/eosio.hpp>\n"
-                           "using namespace eosio;\n\n"
+   const std::string hpp = "#include <chainsql/chainsql.hpp>\n"
+                           "using namespace chainsql;\n\n"
                            "CONTRACT @ : public contract {\n"
                            "   public:\n"
                            "      using contract::contract;\n\n"
@@ -66,7 +66,7 @@ struct project {
                                  "Stub for hi action's ricardian contract";
 
    const std::string cmake = "project(@)\n\n"
-                             "set(EOSIO_WASM_OLD_BEHAVIOR \"Off\")\n"
+                             "set(CHAINSQL_WASM_OLD_BEHAVIOR \"Off\")\n"
                              "find_package(chainsql.cdt)\n\n"
                              "add_contract( @ @ @.cpp )\n"
                              "target_include_directories( @ PUBLIC ${CMAKE_SOURCE_DIR}/../include )\n"
@@ -187,7 +187,7 @@ int main(int argc, const char **argv) {
    cl::SetVersionPrinter([](llvm::raw_ostream& os) {
         os << "chainsql-init version " << "@VERSION_FULL@" << "\n";
   });
-   cl::OptionCategory cat("chainsql-init", "generates an eosio smart contract project");
+   cl::OptionCategory cat("chainsql-init", "generates an chainsql smart contract project");
 
    cl::opt<bool> bare_opt(
       "bare",
@@ -203,7 +203,7 @@ int main(int argc, const char **argv) {
       cl::desc("directory to place the project"),
       cl::cat(cat));
 
-   cl::ParseCommandLineOptions(argc, argv, std::string("eosio-proj"));
+   cl::ParseCommandLineOptions(argc, argv, std::string("chainsql-proj"));
    try {
       if (!std::regex_match(project_name, std::regex("^[_a-zA-Z][_a-zA-Z0-9]*$"))) {
          throw std::runtime_error("ERROR: invalid identifier: " + project_name + " (ensure that it is a valid C++ identifier)");

@@ -16,12 +16,12 @@
 #include "clang/Rewrite/Core/Rewriter.h"
 #include "clang/Rewrite/Frontend/Rewriters.h"
 
-#include <eosio/gen.hpp>
+#include <chainsql/gen.hpp>
 
-#include <eosio/utils.hpp>
-#include <eosio/whereami/whereami.hpp>
-#include <eosio/abi.hpp>
-#include <eosio/ppcallbacks.hpp>
+#include <chainsql/utils.hpp>
+#include <chainsql/whereami/whereami.hpp>
+#include <chainsql/abi.hpp>
+#include <chainsql/ppcallbacks.hpp>
 
 #include <exception>
 #include <iostream>
@@ -39,10 +39,10 @@ using namespace clang;
 using namespace clang::driver;
 using namespace clang::tooling;
 using namespace llvm;
-using namespace eosio;
-using namespace eosio::cdt;
+using namespace chainsql;
+using namespace chainsql::cdt;
 
-namespace eosio { namespace cdt {
+namespace chainsql { namespace cdt {
    class codegen : public generation_utils {
       public:
          Rewriter          codegen_rewriter;
@@ -83,7 +83,7 @@ namespace eosio { namespace cdt {
          }
    };
 
-   class eosio_codegen_visitor : public RecursiveASTVisitor<eosio_codegen_visitor>, public generation_utils {
+   class chainsql_codegen_visitor : public RecursiveASTVisitor<chainsql_codegen_visitor>, public generation_utils {
       private:
          codegen& cg = codegen::get();
          FileID    main_fid;
@@ -103,7 +103,7 @@ namespace eosio { namespace cdt {
          call_map_t                  func_calls;
          indirect_func_map_t         indi_func_map;
 
-         explicit eosio_codegen_visitor(CompilerInstance *CI)
+         explicit chainsql_codegen_visitor(CompilerInstance *CI)
                : generation_utils(), ci(CI) {
             cg.ast_context = &(CI->getASTContext());
             cg.codegen_ci = CI;
@@ -125,7 +125,7 @@ namespace eosio { namespace cdt {
 
          bool is_datastream(const QualType& qt) {
             auto str_name = qt.getAsString();
-            auto ds_re    = std::regex("(((class eosio::)?datastream<[a-zA-Z]+[a-zA-Z0-9]*.*>)|(DataStream)) &");
+            auto ds_re    = std::regex("(((class chainsql::)?datastream<[a-zA-Z]+[a-zA-Z0-9]*.*>)|(DataStream)) &");
             if (std::regex_match(str_name, ds_re))
                return true;
             return false;
@@ -154,17 +154,17 @@ namespace eosio { namespace cdt {
             std::stringstream ss;
             codegen& cg = codegen::get();
             std::string nm = decl->getNameAsString()+"_"+decl->getParent()->getNameAsString();
-            if (cg.is_eosio_contract(decl, cg.contract_name)) {
-               ss << "\n\n#include <eosio/datastream.hpp>\n";
-               ss << "#include <eosio/name.hpp>\n";
+            if (cg.is_chainsql_contract(decl, cg.contract_name)) {
+               ss << "\n\n#include <chainsql/datastream.hpp>\n";
+               ss << "#include <chainsql/name.hpp>\n";
                ss << "extern \"C\" {\n";
-               ss << "__attribute__((eosio_wasm_import))\n";
+               ss << "__attribute__((chainsql_wasm_import))\n";
                ss << "uint32_t action_data_size();\n";
-               ss << "__attribute__((eosio_wasm_import))\n";
+               ss << "__attribute__((chainsql_wasm_import))\n";
                ss << "uint32_t read_action_data(void*, uint32_t);\n";
                const auto& return_ty = decl->getReturnType().getAsString();	
                if (return_ty != "void") {	
-                  ss << "__attribute__((eosio_wasm_import))\n";	
+                  ss << "__attribute__((chainsql_wasm_import))\n";	
                   ss << "void set_action_return_value(void*, size_t);\n";	
                }
                ss << "__attribute__((weak, " << attr << "(\"";
@@ -178,7 +178,7 @@ namespace eosio { namespace cdt {
                ss << "buff = as >= " << max_stack_size << " ? malloc(as) : alloca(as);\n";
                ss << "::read_action_data(buff, as);\n";
                ss << "}\n";
-               ss << "eosio::datastream<const char*> ds{(char*)buff, as};\n";
+               ss << "chainsql::datastream<const char*> ds{(char*)buff, as};\n";
                int i=0;
                for (auto param : decl->parameters()) {
                   clang::LangOptions lang_opts;
@@ -194,7 +194,7 @@ namespace eosio { namespace cdt {
                   i++;
                }
                const auto& call_action = [&]() {
-                  ss << decl->getParent()->getQualifiedNameAsString() << "{eosio::name{r},eosio::name{c},ds}." << decl->getNameAsString() << "(";
+                  ss << decl->getParent()->getQualifiedNameAsString() << "{chainsql::name{r},chainsql::name{c},ds}." << decl->getNameAsString() << "(";
                   for (int i=0; i < decl->parameters().size(); i++) {
                      ss << "arg" << i;
                      if (i < decl->parameters().size()-1)
@@ -207,7 +207,7 @@ namespace eosio { namespace cdt {
                }
                call_action();
                if (return_ty != "void") {
-                  ss << "const auto& packed_result = eosio::pack(result);\n";
+                  ss << "const auto& packed_result = chainsql::pack(result);\n";
                   ss << "set_action_return_value((void*)packed_result.data(), packed_result.size());\n";
                }
                ss << "}}\n";
@@ -218,22 +218,22 @@ namespace eosio { namespace cdt {
 
          void create_action_dispatch(CXXMethodDecl* decl) {
             auto func = [](CXXMethodDecl* d) { return generation_utils::get_action_name(d); };
-            create_dispatch("eosio_wasm_action", "__eosio_action_", func, decl);
+            create_dispatch("chainsql_wasm_action", "__chainsql_action_", func, decl);
          }
 
          void create_notify_dispatch(CXXMethodDecl* decl) {
             auto func = [](CXXMethodDecl* d) { return generation_utils::get_notify_pair(d); };
-            create_dispatch("eosio_wasm_notify", "__eosio_notify_", func, decl);
+            create_dispatch("chainsql_wasm_notify", "__chainsql_notify_", func, decl);
          }
 
          virtual bool VisitCXXMethodDecl(CXXMethodDecl* decl) {
             std::string name = decl->getNameAsString();
             static std::set<std::string> _action_set; //used for validations
             static std::set<std::string> _notify_set; //used for validations
-            if (decl->isEosioAction()) {
+            if (decl->isChainSQLAction()) {
                name = generation_utils::get_action_name(decl);
                validate_name(name, [&](auto s) {
-                  CDT_ERROR("codegen_error", decl->getLocation(), std::string("action name (")+s+") is not a valid eosio name");
+                  CDT_ERROR("codegen_error", decl->getLocation(), std::string("action name (")+s+") is not a valid chainsql name");
                });
 
                if (!_action_set.count(name))
@@ -248,11 +248,11 @@ namespace eosio { namespace cdt {
                }
                cg.actions.insert(full_action_name); // insert the method action, so we don't create the dispatcher twice
 
-               if (decl->isEosioReadOnly()) {
+               if (decl->isChainSQLReadOnly()) {
                   read_only_actions.insert(decl);
                }
             }
-            else if (decl->isEosioNotify()) {
+            else if (decl->isChainSQLNotify()) {
                name = generation_utils::get_notify_pair(decl);
                auto first = name.substr(0, name.find("::"));
                if (first != "*")
@@ -409,7 +409,7 @@ namespace eosio { namespace cdt {
          }
 
          virtual bool VisitCXXRecordDecl(CXXRecordDecl* decl) {
-            if (decl->isEosioContract()) {
+            if (decl->isChainSQLContract()) {
                auto process_data_member = [this]( CXXRecordDecl* rd ) {
                   for (auto it = rd->decls_begin(); it != rd->decls_end(); ++it) {
                      if (auto* f = dyn_cast<FieldDecl>(*it) ) {
@@ -441,15 +441,15 @@ namespace eosio { namespace cdt {
 
       };
 
-      class eosio_codegen_consumer : public ASTConsumer, public generation_utils {
+      class chainsql_codegen_consumer : public ASTConsumer, public generation_utils {
       private:
-         eosio_codegen_visitor *visitor;
+         chainsql_codegen_visitor *visitor;
          std::string main_file;
          CompilerInstance* ci;
 
       public:
-         explicit eosio_codegen_consumer(CompilerInstance *CI, std::string file)
-            : visitor(new eosio_codegen_visitor(CI)), main_file(file), ci(CI) { }
+         explicit chainsql_codegen_consumer(CompilerInstance *CI, std::string file)
+            : visitor(new chainsql_codegen_visitor(CI)), main_file(file), ci(CI) { }
 
 
          virtual void HandleTranslationUnit(ASTContext &Context) {
@@ -499,13 +499,13 @@ namespace eosio { namespace cdt {
                   std::stringstream ss;
                   ss << "\n";
                   ss << "extern \"C\" {\n";
-                  ss << "__attribute__((eosio_wasm_import))\n";
-                  ss << "void eosio_assert_code(uint32_t, uint64_t);";
-                  ss << "\t__attribute__((weak, eosio_wasm_entry, eosio_wasm_abi(";
+                  ss << "__attribute__((chainsql_wasm_import))\n";
+                  ss << "void chainsql_assert_code(uint32_t, uint64_t);";
+                  ss << "\t__attribute__((weak, chainsql_wasm_entry, chainsql_wasm_abi(";
                   ss << "\"" << quoted(cg.abi) << "\"";
                   ss << ")))\n";
-                  ss << "\tvoid __insert_eosio_abi(unsigned long long r, unsigned long long c, unsigned long long a){";
-                  ss << "eosio_assert_code(false, 1);";
+                  ss << "\tvoid __insert_chainsql_abi(unsigned long long r, unsigned long long c, unsigned long long a){";
+                  ss << "chainsql_assert_code(false, 1);";
                   ss << "}\n";
                   ss << "}";
                   visitor->get_rewriter().InsertTextAfter(ci->getSourceManager().getLocForEndOfFile(fid), ss.str());
@@ -521,12 +521,12 @@ namespace eosio { namespace cdt {
 
       };
 
-      class eosio_codegen_frontend_action : public ASTFrontendAction {
+      class chainsql_codegen_frontend_action : public ASTFrontendAction {
       public:
          virtual std::unique_ptr<ASTConsumer> CreateASTConsumer(CompilerInstance &CI, StringRef file) {
-            CI.getPreprocessor().addPPCallbacks(std::make_unique<eosio_ppcallbacks>(CI.getSourceManager(), file.str()));
-            return std::make_unique<eosio_codegen_consumer>(&CI, file);
+            CI.getPreprocessor().addPPCallbacks(std::make_unique<chainsql_ppcallbacks>(CI.getSourceManager(), file.str()));
+            return std::make_unique<chainsql_codegen_consumer>(&CI, file);
          }
    };
 
-}} // ns eosio::cdt
+}} // ns chainsql::cdt

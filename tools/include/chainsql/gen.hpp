@@ -7,8 +7,8 @@
 #include "clang/Tooling/Tooling.h"
 #include "clang/AST/Decl.h"
 #include "llvm/Support/raw_ostream.h"
-#include <eosio/utils.hpp>
-#include <eosio/error_emitter.hpp>
+#include <chainsql/utils.hpp>
+#include <chainsql/error_emitter.hpp>
 #include <functional>
 #include <vector>
 #include <string>
@@ -17,7 +17,7 @@
 #include <utility>
 #include <variant>
 
-namespace eosio { namespace cdt {
+namespace chainsql { namespace cdt {
 
 struct simple_ricardian_tokenizer {
    simple_ricardian_tokenizer( const std::string& src ) : source(src), index(0) {}
@@ -121,7 +121,7 @@ struct generation_utils {
       auto check = [&](const clang::Type* pt) {
         if (auto tst = llvm::dyn_cast<clang::TemplateSpecializationType>(pt))
          if (auto rt = llvm::dyn_cast<clang::RecordType>(tst->desugar()))
-            return rt->getDecl()->isEosioIgnore();
+            return rt->getDecl()->isChainSQLIgnore();
 
          return false;
       };
@@ -140,7 +140,7 @@ struct generation_utils {
       auto get = [&](const clang::Type* pt) {
          if (auto tst = llvm::dyn_cast<clang::TemplateSpecializationType>(pt))
             if (auto decl = llvm::dyn_cast<clang::RecordType>(tst->desugar()))
-               return decl->getDecl()->isEosioIgnore() ? tst->getArg(0).getAsType() : type;
+               return decl->getDecl()->isChainSQLIgnore() ? tst->getArg(0).getAsType() : type;
          return type;
       };
 
@@ -170,35 +170,35 @@ struct generation_utils {
       }
    }
 
-   static inline bool has_eosio_ricardian( const clang::CXXMethodDecl* decl ) {
-      return decl->hasEosioRicardian();
+   static inline bool has_chainsql_ricardian( const clang::CXXMethodDecl* decl ) {
+      return decl->hasChainSQLRicardian();
    }
-   static inline bool has_eosio_ricardian( const clang::CXXRecordDecl* decl ) {
-      return decl->hasEosioRicardian();
+   static inline bool has_chainsql_ricardian( const clang::CXXRecordDecl* decl ) {
+      return decl->hasChainSQLRicardian();
    }
 
-   static inline std::string get_eosio_ricardian( const clang::CXXMethodDecl* decl ) {
-      return decl->getEosioRicardianAttr()->getName();
+   static inline std::string get_chainsql_ricardian( const clang::CXXMethodDecl* decl ) {
+      return decl->getChainSQLRicardianAttr()->getName();
    }
-   static inline std::string get_eosio_ricardian( const clang::CXXRecordDecl* decl ) {
-      return decl->getEosioRicardianAttr()->getName();
+   static inline std::string get_chainsql_ricardian( const clang::CXXRecordDecl* decl ) {
+      return decl->getChainSQLRicardianAttr()->getName();
    }
 
    static inline std::string get_action_name( const clang::CXXMethodDecl* decl ) {
       std::string action_name = "";
-      auto tmp = decl->getEosioActionAttr()->getName();
+      auto tmp = decl->getChainSQLActionAttr()->getName();
       if (!tmp.empty())
          return tmp;
       return decl->getNameAsString();
    }
    static inline std::string get_notify_pair( const clang::CXXMethodDecl* decl ) {
       std::string notify_pair = "";
-      auto tmp = decl->getEosioNotifyAttr()->getName();
+      auto tmp = decl->getChainSQLNotifyAttr()->getName();
       return tmp;
    }
    static inline std::string get_action_name( const clang::CXXRecordDecl* decl ) {
       std::string action_name = "";
-      auto tmp = decl->getEosioActionAttr()->getName();
+      auto tmp = decl->getChainSQLActionAttr()->getName();
       if (!tmp.empty())
          return tmp;
       return decl->getName();
@@ -273,12 +273,12 @@ struct generation_utils {
       return clause_pairs;
    }
 
-   static inline bool is_eosio_contract( const clang::CXXMethodDecl* decl, const std::string& cn ) {
+   static inline bool is_chainsql_contract( const clang::CXXMethodDecl* decl, const std::string& cn ) {
       std::string name = "";
-      if (decl->isEosioContract())
-         name = decl->getEosioContractAttr()->getName();
-      else if (decl->getParent()->isEosioContract())
-         name = decl->getParent()->getEosioContractAttr()->getName();
+      if (decl->isChainSQLContract())
+         name = decl->getChainSQLContractAttr()->getName();
+      else if (decl->getParent()->isChainSQLContract())
+         name = decl->getParent()->getChainSQLContractAttr()->getName();
       if (name.empty()) {
          name = decl->getParent()->getName().str();
       }
@@ -286,15 +286,15 @@ struct generation_utils {
       return cn == parsed_contract_name;
    }
 
-   static inline bool is_eosio_contract( const clang::CXXRecordDecl* decl, const std::string& cn ) {
+   static inline bool is_chainsql_contract( const clang::CXXRecordDecl* decl, const std::string& cn ) {
       std::string name = "";
       auto pd = llvm::dyn_cast<clang::CXXRecordDecl>(decl->getParent());
-      if (decl->isEosioContract()) {
-         auto nm = decl->getEosioContractAttr()->getName().str();
+      if (decl->isChainSQLContract()) {
+         auto nm = decl->getChainSQLContractAttr()->getName().str();
          name = nm.empty() ? decl->getName().str() : nm;
       }
-      else if (pd && pd->isEosioContract()) {
-         auto nm = pd->getEosioContractAttr()->getName().str();
+      else if (pd && pd->isChainSQLContract()) {
+         auto nm = pd->getChainSQLContractAttr()->getName().str();
          name = nm.empty() ? pd->getName().str() : nm;
       }
       parsed_contract_name = name;
@@ -669,7 +669,7 @@ struct generation_utils {
          }
       }
       //The following else if (is_tuple(type)) block is removed, because it causes chainsql-cpp compilation
-      //failure on any action that has std::tuple<Ts...> parameter, also the type eosio::non_unique this block
+      //failure on any action that has std::tuple<Ts...> parameter, also the type chainsql::non_unique this block
       //was supposed to handle is obsolete now.
       //
       //else if (is_tuple(type)) {
@@ -841,14 +841,14 @@ struct generation_utils {
    }
 
    inline bool is_kv_map(const clang::CXXRecordDecl* decl) {
-      return decl->getQualifiedNameAsString().find("eosio::kv::map<") != std::string::npos;
+      return decl->getQualifiedNameAsString().find("chainsql::kv::map<") != std::string::npos;
    }
 
    // TODO replace this body after this release to reflect the new table type
    inline bool is_kv_table(const clang::CXXRecordDecl* decl) {
       for (const auto& base : decl->bases()) {
          auto type = base.getType();
-         if (type.getAsString().find("eosio::kv::table<") != std::string::npos) {
+         if (type.getAsString().find("chainsql::kv::table<") != std::string::npos) {
             return true;
          }
       }
@@ -866,7 +866,7 @@ struct generation_utils {
 
       const auto fqn = decl->getQualifiedNameAsString();
 
-      const auto in_kv_namespace = fqn.find("eosio::kv") != std::string::npos;
+      const auto in_kv_namespace = fqn.find("chainsql::kv") != std::string::npos;
       const bool is_internal = internal_types.count(decl->getNameAsString());
 
       return in_kv_namespace && is_internal;
@@ -929,4 +929,4 @@ struct generation_utils {
       return inline_action_funcs.count(t) >= 1;
    }
 };
-}} // ns eosio::cdt
+}} // ns chainsql::cdt

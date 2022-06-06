@@ -9,10 +9,10 @@
 #include "clang/AST/Expr.h"
 #include "clang/Basic/Builtins.h"
 #include "llvm/Support/FileSystem.h"
-#include "eosio/utils.hpp"
-#include "eosio/gen.hpp"
-#include "eosio/whereami/whereami.hpp"
-#include "eosio/abi.hpp"
+#include "chainsql/utils.hpp"
+#include "chainsql/gen.hpp"
+#include "chainsql/whereami/whereami.hpp"
+#include "chainsql/abi.hpp"
 
 #include <exception>
 #include <iostream>
@@ -30,14 +30,14 @@
 using namespace clang::tooling;
 using namespace clang::ast_matchers;
 using namespace llvm;
-using namespace eosio;
-using namespace eosio::cdt;
+using namespace chainsql;
+using namespace chainsql::cdt;
 using jsoncons::json;
 using jsoncons::ojson;
 
 struct abidiff_exception : public std::exception {
    virtual const char* what() const throw() {
-      return "eosio.abidiff fatal error";
+      return "chainsql.abidiff fatal error";
    }
 } abidiff_ex;
 

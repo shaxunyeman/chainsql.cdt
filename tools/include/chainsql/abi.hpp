@@ -73,11 +73,11 @@ struct abi_action_result {
    bool operator<(const abi_action_result& ar) const { return name < ar.name; }
 };
 
-/// From eosio libraries/chain/include/eosio/chain/abi_def.hpp
+/// From chainsql libraries/chain/include/chainsql/chain/abi_def.hpp
 struct abi {
    int version_major = 1;
    int version_minor = 1;
-   std::string version_string()const { return std::string("eosio::abi/")+std::to_string(version_major)+"."+std::to_string(version_minor); }
+   std::string version_string()const { return std::string("chainsql::abi/")+std::to_string(version_major)+"."+std::to_string(version_minor); }
    std::set<abi_struct>                   structs;
    std::set<abi_typedef>                  typedefs;
    std::set<abi_action>                   actions;

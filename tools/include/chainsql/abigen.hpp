@@ -1,6 +1,6 @@
 #pragma once
-#include <eosio/gen.hpp>
-#include <eosio/ppcallbacks.hpp>
+#include <chainsql/gen.hpp>
+#include <chainsql/ppcallbacks.hpp>
 
 #include "clang/Driver/Options.h"
 #include "clang/AST/AST.h"
@@ -16,9 +16,9 @@
 #include "clang/Rewrite/Core/Rewriter.h"
 #include "clang/Rewrite/Frontend/Rewriters.h"
 
-#include <eosio/utils.hpp>
-#include <eosio/whereami/whereami.hpp>
-#include <eosio/abi.hpp>
+#include <chainsql/utils.hpp>
+#include <chainsql/whereami/whereami.hpp>
+#include <chainsql/abi.hpp>
 
 #include <exception>
 #include <iostream>
@@ -31,12 +31,12 @@
 #include <jsoncons/json.hpp>
 
 using namespace llvm;
-using namespace eosio;
-using namespace eosio::cdt;
+using namespace chainsql;
+using namespace chainsql::cdt;
 using jsoncons::json;
 using jsoncons::ojson;
 
-namespace eosio { namespace cdt {
+namespace chainsql { namespace cdt {
    class abigen : public generation_utils {
       std::set<std::string> checked_actions;
       public:
@@ -66,7 +66,7 @@ namespace eosio { namespace cdt {
 
       void add_action( const clang::CXXRecordDecl* decl ) {
          abi_action ret;
-         auto action_name = decl->getEosioActionAttr()->getName();
+         auto action_name = decl->getChainSQLActionAttr()->getName();
 
          if (!checked_actions.insert(get_action_name(decl)).second)
             CDT_CHECK_WARN(!rcs[get_action_name(decl)].empty(), "abigen_warning", decl->getLocation(), "Action <"+get_action_name(decl)+"> does not have a ricardian contract");
@@ -93,7 +93,7 @@ namespace eosio { namespace cdt {
       void add_action( const clang::CXXMethodDecl* decl ) {
          abi_action ret;
 
-         auto action_name = decl->getEosioActionAttr()->getName();
+         auto action_name = decl->getChainSQLActionAttr()->getName();
 
          if (!checked_actions.insert(get_action_name(decl)).second)
             CDT_CHECK_WARN(!rcs[get_action_name(decl)].empty(), "abigen_warning", decl->getLocation(), "Action <"+get_action_name(decl)+"> does not have a ricardian contract");
@@ -232,7 +232,7 @@ namespace eosio { namespace cdt {
       }
 
       void add_table( const clang::CXXRecordDecl* decl ) {
-         // short circuit if we happen across `eosio::kv::map` declaration
+         // short circuit if we happen across `chainsql::kv::map` declaration
          if (is_kv_map(decl))
             return;
          if (is_kv_table(decl)) {
@@ -243,7 +243,7 @@ namespace eosio { namespace cdt {
          tables.insert(decl);
          abi_table t;
          t.type = decl->getNameAsString();
-         auto table_name = decl->getEosioTableAttr()->getName();
+         auto table_name = decl->getChainSQLTableAttr()->getName();
          if (!table_name.empty()) {
             validate_name( table_name.str(), [&](auto s) { CDT_ERROR("abigen_error", decl->getLocation(), s); } );
             t.name = table_name.str();
@@ -255,7 +255,7 @@ namespace eosio { namespace cdt {
       }
 
       void add_table( uint64_t name, const clang::CXXRecordDecl* decl ) {
-         if (!(decl->isEosioTable() && abigen::is_eosio_contract(decl, get_contract_name())))
+         if (!(decl->isChainSQLTable() && abigen::is_chainsql_contract(decl, get_contract_name())))
             return;
 
          abi_table t;
@@ -622,7 +622,7 @@ namespace eosio { namespace cdt {
 
       std::string generate_json_comment() {
          std::stringstream ss;
-         ss << "This file was generated with eosio-abigen.";
+         ss << "This file was generated with chainsql-abigen.";
          ss << " DO NOT EDIT ";
          return ss.str();
       }
@@ -927,13 +927,13 @@ namespace eosio { namespace cdt {
 
    };
 
-   class eosio_abigen_visitor : public RecursiveASTVisitor<eosio_abigen_visitor>, public generation_utils {
+   class chainsql_abigen_visitor : public RecursiveASTVisitor<chainsql_abigen_visitor>, public generation_utils {
       private:
          bool has_added_clauses = false;
          abigen& ag = abigen::get();
 
       public:
-         explicit eosio_abigen_visitor(CompilerInstance *CI) {
+         explicit chainsql_abigen_visitor(CompilerInstance *CI) {
             get_error_emitter().set_compiler_instance(CI);
          }
 
@@ -948,7 +948,7 @@ namespace eosio { namespace cdt {
                has_added_clauses = true;
             }
 
-            if (decl->isEosioAction() && ag.is_eosio_contract(decl, ag.get_contract_name())) {
+            if (decl->isChainSQLAction() && ag.is_chainsql_contract(decl, ag.get_contract_name())) {
                ag.add_struct(decl);
                ag.add_action(decl);
                for (auto param : decl->parameters()) {
@@ -963,11 +963,11 @@ namespace eosio { namespace cdt {
                ag.add_contracts(ag.parse_contracts());
                has_added_clauses = true;
             }
-            if ((decl->isEosioAction() || decl->isEosioTable()) && ag.is_eosio_contract(decl, ag.get_contract_name())) {
+            if ((decl->isChainSQLAction() || decl->isChainSQLTable()) && ag.is_chainsql_contract(decl, ag.get_contract_name())) {
                ag.add_struct(decl);
-               if (decl->isEosioAction())
+               if (decl->isChainSQLAction())
                   ag.add_action(decl);
-               if (decl->isEosioTable())
+               if (decl->isChainSQLTable())
                   ag.add_table(decl);
                for (auto field : decl->fields()) {
                   ag.add_type( field->getType() );
@@ -981,7 +981,7 @@ namespace eosio { namespace cdt {
                   ag.add_table(d->getTemplateArgs()[0].getAsIntegral().getExtValue(),
                         (clang::CXXRecordDecl*)((clang::RecordType*)d->getTemplateArgs()[1].getAsType().getTypePtr())->getDecl());
                } else if (d->getName() == "map") {
-                  if (d->getSpecializedTemplate()->getTemplatedDecl()->isEosioTable())
+                  if (d->getSpecializedTemplate()->getTemplatedDecl()->isChainSQLTable())
                      ag.add_kv_map(d);
                }
             }
@@ -989,15 +989,15 @@ namespace eosio { namespace cdt {
          }
    };
 
-   class eosio_abigen_consumer : public ASTConsumer {
+   class chainsql_abigen_consumer : public ASTConsumer {
       private:
-         eosio_abigen_visitor *visitor;
+         chainsql_abigen_visitor *visitor;
          std::string main_file;
          CompilerInstance* ci;
 
       public:
-         explicit eosio_abigen_consumer(CompilerInstance *CI, std::string file)
-            : visitor(new eosio_abigen_visitor(CI)), main_file(file), ci(CI) { }
+         explicit chainsql_abigen_consumer(CompilerInstance *CI, std::string file)
+            : visitor(new chainsql_abigen_visitor(CI)), main_file(file), ci(CI) { }
 
          virtual void HandleTranslationUnit(ASTContext &Context) {
             auto& src_mgr = Context.getSourceManager();
@@ -1010,11 +1010,11 @@ namespace eosio { namespace cdt {
          }
    };
 
-   class eosio_abigen_frontend_action : public ASTFrontendAction {
+   class chainsql_abigen_frontend_action : public ASTFrontendAction {
       public:
          virtual std::unique_ptr<ASTConsumer> CreateASTConsumer(CompilerInstance &CI, StringRef file) {
-            CI.getPreprocessor().addPPCallbacks(std::make_unique<eosio_ppcallbacks>(CI.getSourceManager(), file.str()));
-            return std::make_unique<eosio_abigen_consumer>(&CI, file);
+            CI.getPreprocessor().addPPCallbacks(std::make_unique<chainsql_ppcallbacks>(CI.getSourceManager(), file.str()));
+            return std::make_unique<chainsql_abigen_consumer>(&CI, file);
          }
    };
-}} // ns eosio::cdt
+}} // ns chainsql::cdt

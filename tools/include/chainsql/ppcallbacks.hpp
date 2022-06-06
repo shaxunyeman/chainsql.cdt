@@ -10,19 +10,19 @@ using namespace clang;
 using namespace clang::driver;
 using namespace clang::tooling;
 using namespace llvm;
-using namespace eosio;
-using namespace eosio::cdt;
+using namespace chainsql;
+using namespace chainsql::cdt;
 
-namespace eosio { namespace cdt {
+namespace chainsql { namespace cdt {
    struct include_double {
       include_double(std::string fn, SourceRange sr) : file_name(fn), range(sr) {}
       std::string    file_name;
       SourceRange    range;
    };
    std::map<std::string, std::vector<include_double>>  global_includes;
-   class eosio_ppcallbacks : public PPCallbacks {
+   class chainsql_ppcallbacks : public PPCallbacks {
       public:
-         eosio_ppcallbacks(SourceManager& sm, std::string file) : sources(sm), fn(file) {}
+         chainsql_ppcallbacks(SourceManager& sm, std::string file) : sources(sm), fn(file) {}
       protected:
          virtual void InclusionDirective(
             SourceLocation hash_loc,

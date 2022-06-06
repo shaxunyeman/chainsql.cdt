@@ -3,12 +3,12 @@ if(CHAINSQL_CDT_ROOT STREQUAL "" OR NOT CHAINSQL_CDT_ROOT)
 endif()
 
 list(APPEND CMAKE_MODULE_PATH ${CHAINSQL_CDT_ROOT}/lib/cmake/chainql.cdt)
-if (NOT EOSIO_WASM_OLD_BEHAVIOR STREQUAL "Off")
-    set(EOSIO_WASM_OLD_BEHAVIOR "On")
-    include(EosioWasmToolchain)
+if (NOT CHAINSQL_WASM_OLD_BEHAVIOR STREQUAL "Off")
+    set(CHAINSQL_WASM_OLD_BEHAVIOR "On")
+    include(ChainSQLWasmToolchain)
 endif()
 
-include(EosioCDTMacros)
+include(ChainSQLCDTMacros)
   
 
 function(EXTRACT_MAJOR_MINOR_FROM_VERSION version success major minor)
@@ -29,7 +29,7 @@ function(EXTRACT_MAJOR_MINOR_FROM_VERSION version success major minor)
    set(${success} TRUE      PARENT_SCOPE)
 endfunction(EXTRACT_MAJOR_MINOR_FROM_VERSION)
 
-function(EOSIO_CHECK_VERSION output version hard_min soft_max hard_max) # optional 6th argument for error message
+function(CHAINSQL_CHECK_VERSION output version hard_min soft_max hard_max) # optional 6th argument for error message
    set(${output} "INVALID" PARENT_SCOPE)
 
    EXTRACT_MAJOR_MINOR_FROM_VERSION("${version}" success major minor)
@@ -100,4 +100,4 @@ function(EOSIO_CHECK_VERSION output version hard_min soft_max hard_max) # option
    endif()
 
    set(${output} "MATCH" PARENT_SCOPE)
-endfunction(EOSIO_CHECK_VERSION)
+endfunction(CHAINSQL_CHECK_VERSION)

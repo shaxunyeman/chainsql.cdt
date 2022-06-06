@@ -75,8 +75,8 @@ chainsql_tool_install_and_symlink(chainsql-ld chainsql-ld)
 chainsql_tool_install_and_symlink(chainsql-abidiff chainsql-abidiff)
 chainsql_tool_install_and_symlink(chainsql-init chainsql-init)
 
-chainsql_clang_install(../lib/LLVMEosioApply${CMAKE_SHARED_LIBRARY_SUFFIX})
-chainsql_clang_install(../lib/LLVMEosioSoftfloat${CMAKE_SHARED_LIBRARY_SUFFIX})
+chainsql_clang_install(../lib/LLVMChainSQLApply${CMAKE_SHARED_LIBRARY_SUFFIX})
+chainsql_clang_install(../lib/LLVMChainSQLSoftfloat${CMAKE_SHARED_LIBRARY_SUFFIX})
 
 chainsql_cmake_install_and_symlink(chainsql.cdt-config.cmake chainsql.cdt-config.cmake)
 chainsql_cmake_install_and_symlink(chainsqlWasmToolchain.cmake chainsqlWasmToolchain.cmake)
