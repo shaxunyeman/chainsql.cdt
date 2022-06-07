@@ -6,10 +6,18 @@
 #include "chainsqlib/core/chainsql/context.h"
 
 extern "C" {
+
+     __attribute__((chainsql_wasm_import))
     int64_t kv_set(const void *key, uint32_t key_size,
                    const void *value, uint32_t value_size);
+    
+     __attribute__((chainsql_wasm_import))
     /*bool*/ int32_t kv_get(const void *key, uint32_t key_size, uint32_t &value_size);
+
+     __attribute__((chainsql_wasm_import))
     uint32_t kv_get_data(uint32_t offset, void *data, uint32_t data_size);
+
+     __attribute__((chainsql_wasm_import))
     int64_t kv_erase(const void *key, uint32_t key_size);
 }
 

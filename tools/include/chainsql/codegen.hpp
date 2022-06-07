@@ -155,8 +155,8 @@ namespace chainsql { namespace cdt {
             codegen& cg = codegen::get();
             std::string nm = decl->getNameAsString()+"_"+decl->getParent()->getNameAsString();
             if (cg.is_chainsql_contract(decl, cg.contract_name)) {
-               ss << "\n\n#include <chainsqlib/core/datastream.h>\n";
-               ss << "#include <chainsqlib/core/name.h>\n";
+               ss << "\n\n#include <chainsqlib/core/chainsql/datastream.h>\n";
+               ss << "#include <chainsqlib/core/chainsql/name.h>\n";
                ss << "extern \"C\" {\n";
                ss << "__attribute__((chainsql_wasm_import))\n";
                ss << "int32_t action_data_size();\n";

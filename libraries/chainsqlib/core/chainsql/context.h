@@ -3,6 +3,8 @@
 namespace chainsql {
     namespace internal_use_do_not_use
     {
+
+         __attribute__((chainsql_wasm_import))
         extern "C" uint64_t chainsql_contract_address();
     }
 

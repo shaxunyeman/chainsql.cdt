@@ -10,6 +10,7 @@ namespace chainsql {
         {
             __attribute__((chainsql_wasm_import))
             void chainsql_assert( int32_t test, const void* msg );
+
             __attribute__((chainsql_wasm_import))
             void chainsql_assert_message(int32_t test, const void*msg, int32_t msg_len);
         }

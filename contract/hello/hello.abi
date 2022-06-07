@@ -6,16 +6,7 @@
         {
             "name": "hi",
             "base": "",
-            "fields": [
-                {
-                    "name": "data_ptr",
-                    "type": "int64"
-                },
-                {
-                    "name": "size",
-                    "type": "int32"
-                }
-            ]
+            "fields": []
         }
     ],
     "actions": [
@@ -29,10 +20,5 @@
     "kv_tables": {},
     "ricardian_clauses": [],
     "variants": [],
-    "action_results": [
-        {
-            "name": "hi",
-            "result_type": "int32"
-        }
-    ]
+    "action_results": []
 }
