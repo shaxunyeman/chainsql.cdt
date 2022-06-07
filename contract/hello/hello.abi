@@ -1,0 +1,38 @@
+{
+    "____comment": "This file was generated with chainsql-abigen. DO NOT EDIT ",
+    "version": "chainsql::abi/1.2",
+    "types": [],
+    "structs": [
+        {
+            "name": "hi",
+            "base": "",
+            "fields": [
+                {
+                    "name": "data_ptr",
+                    "type": "int64"
+                },
+                {
+                    "name": "size",
+                    "type": "int32"
+                }
+            ]
+        }
+    ],
+    "actions": [
+        {
+            "name": "hi",
+            "type": "hi",
+            "ricardian_contract": ""
+        }
+    ],
+    "tables": [],
+    "kv_tables": {},
+    "ricardian_clauses": [],
+    "variants": [],
+    "action_results": [
+        {
+            "name": "hi",
+            "result_type": "int32"
+        }
+    ]
+}

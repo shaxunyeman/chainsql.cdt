@@ -5,7 +5,7 @@
 #include <vector>
 #include <map>
 
-#include "chainsqlib/core/table/column.h"
+#include "chainsqlib/core/chainsql/table/column.h"
 
 namespace chainsql
 {

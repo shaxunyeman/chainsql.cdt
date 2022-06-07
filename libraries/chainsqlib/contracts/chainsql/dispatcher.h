@@ -9,9 +9,9 @@
 #include <boost/fusion/include/std_tuple.hpp>
 #include <boost/mp11/tuple.hpp>
 
-#include <chainsqlib/core/name.h>
-#include <chainsqlib/core/datastream.h>
-#include <chainsqlib/contracts/action.h>
+#include <chainsqlib/core/chainsql/name.h>
+#include <chainsqlib/core/chainsql/datastream.h>
+#include <chainsqlib/contracts/chainsql/action.h>
 
 #define WASM_EXPORT __attribute__((used)) __attribute__((visibility ("default")))
 

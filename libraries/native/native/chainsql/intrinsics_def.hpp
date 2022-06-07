@@ -38,7 +38,6 @@ namespace chainsql { namespace native {
 #define INTRINSICS(intrinsic_macro) \
 intrinsic_macro(chainsql_assert) \
 intrinsic_macro(chainsql_assert_message) \
-intrinsic_macro(chainsql_memcpy) \
 intrinsic_macro(get_tx_context) \
 intrinsic_macro(account_exists) \
 intrinsic_macro(get_balance) \

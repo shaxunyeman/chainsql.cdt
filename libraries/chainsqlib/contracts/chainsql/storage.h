@@ -2,8 +2,8 @@
 
 #include <vector>
 
-#include "chainsqlib/core/datastream.h"
-#include "chainsqlib/core/context.h"
+#include "chainsqlib/core/chainsql/datastream.h"
+#include "chainsqlib/core/chainsql/context.h"
 
 extern "C" {
     int64_t kv_set(const void *key, uint32_t key_size,

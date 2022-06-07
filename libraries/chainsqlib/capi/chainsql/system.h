@@ -6,7 +6,6 @@ extern "C"
 #endif
     void chainsql_assert(int32_t test, const void *msg);
     void chainsql_assert_message(int32_t test, const void *msg, int32_t msg_len);
-    void chainsql_memcpy(void *, uint64_t, uint32_t);
     const void *get_tx_context();
     uint64_t chainsql_contract_address();
     int32_t account_exists(const void *address, int32_t len);

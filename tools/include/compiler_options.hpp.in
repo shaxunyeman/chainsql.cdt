@@ -739,14 +739,14 @@ static Options CreateOptions(bool add_defaults=true) {
 
       // only allow capi for native builds and for chainsql-cc
       if (fnative_opt) {
-        copts.emplace_back("-I"+sysroot_opt+"/include/chainsqllib/capi");
-        copts.emplace_back("-I"+sysroot_opt+"/include/chainsqllib/native");
+        copts.emplace_back("-I"+sysroot_opt+"/include/chainsqlib/capi");
+        copts.emplace_back("-I"+sysroot_opt+"/include/chainsqlib/native");
       }
 #ifndef CPP_COMP
-      copts.emplace_back("-I"+sysroot_opt+"/include/chainsqllib/capi");
+      copts.emplace_back("-I"+sysroot_opt+"/include/chainsqlib/capi");
 #endif
-      copts.emplace_back("-I"+sysroot_opt+"/include/chainsqllib/core");
-      copts.emplace_back("-I"+sysroot_opt+"/include/chainsqllib/contracts");
+      copts.emplace_back("-I"+sysroot_opt+"/include/chainsqlib/core");
+      copts.emplace_back("-I"+sysroot_opt+"/include/chainsqlib/contracts");
 
       ldopts.emplace_back("-L"+sysroot_opt+"/lib");
 #ifndef __APPLE__
@@ -765,14 +765,14 @@ static Options CreateOptions(bool add_defaults=true) {
       ldopts.emplace_back("-L"+chainsql::cdt::whereami::where()+"/../lib");
 
       if (fnative_opt) {
-        copts.emplace_back("-I"+chainsql::cdt::whereami::where()+"/../include/chainsqllib/capi");
-        copts.emplace_back("-I"+chainsql::cdt::whereami::where()+"/../include/chainsqllib/native");
+        copts.emplace_back("-I"+chainsql::cdt::whereami::where()+"/../include/chainsqlib/capi");
+        copts.emplace_back("-I"+chainsql::cdt::whereami::where()+"/../include/chainsqlib/native");
       }
 #ifndef CPP_COMP
-      copts.emplace_back("-I"+chainsql::cdt::whereami::where()+"/../include/chainsqllib/capi");
+      copts.emplace_back("-I"+chainsql::cdt::whereami::where()+"/../include/chainsqlib/capi");
 #endif
-      copts.emplace_back("-I"+chainsql::cdt::whereami::where()+"/../include/chainsqllib/core");
-      copts.emplace_back("-I"+chainsql::cdt::whereami::where()+"/../include/chainsqllib/contracts");
+      copts.emplace_back("-I"+chainsql::cdt::whereami::where()+"/../include/chainsqlib/core");
+      copts.emplace_back("-I"+chainsql::cdt::whereami::where()+"/../include/chainsqlib/contracts");
 
 #ifndef __APPLE__
       ldopts.emplace_back("-L"+chainsql::cdt::whereami::where()+"/../lib64");

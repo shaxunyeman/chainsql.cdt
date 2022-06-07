@@ -1,8 +1,8 @@
 #pragma once
 
-#include <chainsqlib/core/name.h>
-#include <chainsqlib/core/datastream.h>
-#include <chainsqlib/contracts/dispatcher.h>
+#include <chainsqlib/core/chainsql/name.h>
+#include <chainsqlib/core/chainsql/datastream.h>
+//#include <chainsqlib/contracts/chainsql/dispatcher.h>
 
 namespace chainsql
 {

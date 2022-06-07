@@ -3,11 +3,11 @@
 #include <vector>
 #include <tuple>
 
-#include "chainsqlib/core/key_utils.h"
-#include "chainsqlib/core/check.h"
-#include "chainsqlib/core/datastream.h"
-#include "chainsqlib/core/name.h"
-#include "chainsqlib/core/context.h"
+#include "chainsqlib/core/chainsql/key_utils.h"
+#include "chainsqlib/core/chainsql/check.h"
+#include "chainsqlib/core/chainsql/datastream.h"
+#include "chainsqlib/core/chainsql/name.h"
+#include "chainsqlib/core/chainsql/context.h"
 
 namespace chainsql::kv {
     namespace internal_use_do_not_use {

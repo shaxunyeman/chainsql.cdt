@@ -5,9 +5,9 @@
 #include <vector>
 #include <memory>
 
-#include "chainsqlib/core/table/condition.h"
-#include "chainsqlib/core/table/column.h"
-#include "chainsqlib/core/table/table.h"
+#include "chainsqlib/core/chainsql/table/condition.h"
+#include "chainsqlib/core/chainsql/table/column.h"
+#include "chainsqlib/core/chainsql/table/table.h"
 
 namespace chainsql {
 

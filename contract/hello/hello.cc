@@ -2,13 +2,15 @@
 #include "chainsqlib/contracts/contract.h"
 
 extern "C" {
+    __attribute__((chainsql_wasm_import))
     void chainsql_memcpy(void*,int64_t,int32_t);
 }
 
-class hello : public chainsql::contract {
+class [[chainsql::contract]] hello : public chainsql::contract {
 public:
     using contract::contract;
 
+    [[chainsql::action]]
     int32_t hi(int64_t data_ptr, int32_t size)
     {
         char buffer[256] = {0};
@@ -28,4 +30,4 @@ private:
     //char buffer[256] = {0};
 };
 
-CHAINSQL_DISPATCH(hello, (hi))
+//CHAINSQL_DISPATCH(hello, (hi))

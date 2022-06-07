@@ -38,7 +38,7 @@ endif()
 
 set(CDT_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/chainsql.cdt)
 
-option(ENABLE_NATIVE_COMPILER "enable native builds with the chainsql.cdt toolchain" ON)
+option(ENABLE_NATIVE_COMPILER "enable native builds with the chainsql.cdt toolchain" OFF)
 option(ENABLE_TESTS "enable building tests" ON)
 
 include(GNUInstallDirs)

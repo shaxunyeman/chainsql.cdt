@@ -13,11 +13,6 @@ extern "C" {
       return intrinsics::get().call<intrinsics::chainsql_assert_message>(test, msg, msg_len);
    }
 
-   void chainsql_memcpy(void *dst, uint64_t src, uint32_t len)
-   {
-      return intrinsics::get().call<intrinsics::chainsql_memcpy>(dst, src, len);
-   }
-
    const void *get_tx_context()
    {
       return intrinsics::get().call<intrinsics::get_tx_context>();
