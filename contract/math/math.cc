@@ -2,9 +2,7 @@
 
 int math::add(int a, int b)
 {
-    int ret = a + b;
-    sum_ += ret;
-    return sum_;
+    return a + b;
 }
 
-CHAINSQL_DISPATCH(math, (add))
+//CHAINSQL_DISPATCH(math, (add))

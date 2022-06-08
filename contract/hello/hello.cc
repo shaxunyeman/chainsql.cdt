@@ -9,11 +9,6 @@ public:
     void hi()
     {
     }
-
-private:
-    void echo(const char *s)
-    {
-    }
 };
 
 //CHAINSQL_DISPATCH(hello, (hi))

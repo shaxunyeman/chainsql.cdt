@@ -3,12 +3,12 @@
 #include <stdint.h>
 #include <stdarg.h>
 
-#include "chainsqlib/contracts/contract.h"
+#include "chainsqlib/contracts/chainsql/contract.h"
 
-class math : public chainsql::contract {
+class [[chainsql::contract]] math : public chainsql::contract {
 public:
     using contract::contract;
+
+    [[chainsql::action]]
     int add(int a, int b);
-private:
-    int sum_;
 };
