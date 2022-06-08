@@ -3,10 +3,7 @@
 #include <cstring>
 #include <utility>
 
-#include "action.h"
-#include "native/chainsql/intrinsics.hpp"
-#include "chainsqlib/capi/action.h"
-#include "chainsqlib/capi/system.h"
+#include "vm/action.h"
 
 namespace chainsql {
     //action::action(

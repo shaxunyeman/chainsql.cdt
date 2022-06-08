@@ -11,6 +11,7 @@
 #include <cassert>
 
 #include "wasm3.h"
+#include "m3_api_libc.h"
 
 
 namespace wasm3 {
@@ -47,11 +48,15 @@ namespace wasm3 {
         template<typename T> struct m3_type_to_sig;
         template<> struct m3_type_to_sig<int32_t> : m3_sig<'i'> {};
         template<> struct m3_type_to_sig<int64_t> : m3_sig<'I'> {};
+        template<> struct m3_type_to_sig<uint32_t> : m3_sig<'i'> {};
+        template<> struct m3_type_to_sig<uint64_t> : m3_sig<'I'> {};
         template<> struct m3_type_to_sig<float>   : m3_sig<'f'> {};
         template<> struct m3_type_to_sig<double>  : m3_sig<'F'> {};
         template<> struct m3_type_to_sig<void>    : m3_sig<'v'> {};
         template<> struct m3_type_to_sig<void *>  : m3_sig<'*'> {};
         template<> struct m3_type_to_sig<const void *> : m3_sig<'*'> {};
+        template<> struct m3_type_to_sig<char *>  : m3_sig<'*'> {};
+        template<> struct m3_type_to_sig<const char *> : m3_sig<'*'> {};
 
 
         template<typename Ret, typename ... Args>
@@ -90,7 +95,7 @@ namespace wasm3 {
                 m3ApiReturn(r);
             }
         };
-
+    
         template <typename ...Args>
         struct wrap_helper<void(Args...)> {
             using Func = void(Args...);
@@ -99,6 +104,33 @@ namespace wasm3 {
                 get_args_from_stack(sp, mem, args);
                 Func* function = reinterpret_cast<Func*>(_ctx->userdata);
                 std::apply(function, args);
+                m3ApiSuccess();
+            }
+        };
+    
+        template <typename Ret, typename ...Args>
+        struct wrap_helper<std::function<Ret(Args...)>> {
+            using Func = std::function<Ret(Args...)>;
+            static const void *wrap_fn(IM3Runtime rt, IM3ImportContext _ctx, stack_type _sp, mem_type mem) {
+                std::tuple<Args...> args;
+                // The order here matters: m3ApiReturnType should go before calling get_args_from_stack,
+                // since both modify `_sp`, and the return value on the stack is reserved before the arguments.
+                m3ApiReturnType(Ret);
+                get_args_from_stack(_sp, mem, args);
+                Func* function = reinterpret_cast<Func*>(_ctx->userdata);
+                Ret r = std::apply(*function, args);
+                m3ApiReturn(r);
+            }
+        };
+
+        template <typename ...Args>
+        struct wrap_helper<std::function<void(Args...)>> {
+            using Func = std::function<void(Args...)>;
+            static const void *wrap_fn(IM3Runtime rt, IM3ImportContext _ctx, stack_type sp, mem_type mem) {
+                std::tuple<Args...> args;
+                get_args_from_stack(sp, mem, args);
+                Func* function = reinterpret_cast<Func*>(_ctx->userdata);
+                std::apply(*function, args);
                 m3ApiSuccess();
             }
         };
@@ -118,6 +150,23 @@ namespace wasm3 {
                                             m3_signature<Ret, Args...>::value,
                                             &wrap_helper<Ret(Args...)>::wrap_fn,
                                             reinterpret_cast<void*>(function));
+            }
+        };
+
+        template <typename Ret, typename... Args>
+        class m3_wrapper<std::function<Ret(Args...)>>
+        {
+        public:
+            static M3Result link(IM3Module io_module,
+                                 const char *const i_moduleName,
+                                 const char *const i_functionName,
+                                 std::function<Ret(Args...)> *function)
+            {
+
+                return m3_LinkRawFunctionEx(io_module, i_moduleName, i_functionName,
+                                            m3_signature<Ret, Args...>::value,
+                                            &wrap_helper<std::function<Ret(Args...)>>::wrap_fn,
+                                            reinterpret_cast<void *>(function));
             }
         };
     } // namespace detail
@@ -214,6 +263,9 @@ namespace wasm3 {
          */
         function find_function(const char *name);
 
+        uint8_t* memory(uint32_t& size);
+        void reload_memory(uint8_t* m, uint32_t size);
+
     protected:
         friend class environment;
 
@@ -258,6 +310,9 @@ namespace wasm3 {
         template<typename Func>
         void link_optional(const char *module, const char *function_name, Func *function);
 
+        void link_libc() {
+            m3_LinkLibC(m_module.get());
+        }
 
     protected:
         friend class environment;
@@ -393,6 +448,17 @@ namespace wasm3 {
 
     inline function runtime::find_function(const char *name) {
         return function(m_runtime, name);
+    }
+
+    inline uint8_t* runtime::memory(uint32_t& size) {
+        return m3_GetMemory(m_runtime.get(), &size, 0);
+    }
+
+    inline void runtime::reload_memory(uint8_t* m, uint32_t size) {
+        uint32_t size_bytes = 0;
+        uint8_t *memory = m3_GetMemory(m_runtime.get(), &size_bytes, 0);
+        assert(size == size_bytes);
+        std::memcpy(memory, m, size);
     }
 
     template<typename Func>

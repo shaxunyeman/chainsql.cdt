@@ -16,7 +16,28 @@ set(sources
     "m3_parse.c"
 )
 
-add_library(m3 STATIC ${sources})
+set(headers
+    "m3_api_libc.h"
+    "m3_api_wasi.h"
+    "m3_api_tracer.h"
+    "m3_bind.h"
+    "m3_code.h"
+    "m3_compile.h"
+    "m3_config_platforms.h"
+    "m3_config.h"
+    "m3_core.h"
+    "m3_env.h"
+    "m3_exception.h"
+    "m3_exec_defs.h"
+    "m3_exec.h"
+    "m3_function.h"
+    "m3_info.h"
+    "m3_math_utils.h"
+    "wasm3_defs.h"
+    "wasm3.h"
+)
+
+add_library(m3 STATIC ${sources} ${headers})
 
 target_include_directories(m3 PUBLIC .)
 

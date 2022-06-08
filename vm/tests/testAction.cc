@@ -11,8 +11,16 @@ int main(int argc, char **argv) {
     payload.resize(2*sizeof(int));
     chainsql::datastream<char *> ds = chainsql::datastream<char *>(payload.data(), payload.size());
     chainsql::action action(chainsql::name("math"), chainsql::name("add"), payload);
-    chainsql::chainsqlWasmVm vm(1024, &action);
-    vm.loadWasm(math_wasm, math_wasm_len);
-    int ret = action.call(vm)
+
+    // initialize a vm 
+    chainsql::chainsqlWasmVm vm(1024);
+    // load wasm code and return a module
+    wasm3::module mod = vm.loadWasm(math_wasm, math_wasm_len);
+
+    // load import functions for module
+    chainsql::importGlobalFunctions global;
+    global.load(mod);
+
+    int ret = vm.apply<int>(chainsql::actionCallBack<int>(action), mod); 
     return 0;
 }

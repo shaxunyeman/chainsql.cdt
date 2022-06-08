@@ -1,4 +1,5 @@
 /build*
 /example/build*
+/contract/kv_map/bin/build*
 .DS_Store
 .vscode

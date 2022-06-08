@@ -1,15 +1,10 @@
-#include <stdint.h>
-#include <stdarg.h>
+#include "math.h"
 
-#include "chainsqlib/contracts/contract.h"
-
-class math : public chainsql::contract {
-public:
-    using contract::contract;
-
-    int add(int a, int b) {
-        return a + b;
-    }
-};
+int math::add(int a, int b)
+{
+    int ret = a + b;
+    sum_ += ret;
+    return sum_;
+}
 
 CHAINSQL_DISPATCH(math, (add))

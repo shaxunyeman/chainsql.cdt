@@ -6,8 +6,11 @@ add_executable(
 
 include_directories(
     ".."
+    "../libraries"
+    "../libraries/boost/include"
 )
-target_link_libraries(chainsqlWasm PRIVATE chainsqlWasmVm)
+
+target_link_libraries(chainsqlWasm PRIVATE wasmvm m3)
 target_compile_features(chainsqlWasm PRIVATE cxx_std_17)
 
 add_custom_command(
