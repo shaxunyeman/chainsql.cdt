@@ -11,4 +11,7 @@ public:
 
     [[chainsql::action]]
     int add(int a, int b);
+
+    [[chainsql::action]] 
+    int mult(int a, int b);
 };

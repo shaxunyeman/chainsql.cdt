@@ -5,4 +5,7 @@ int math::add(int a, int b)
     return a + b;
 }
 
-//CHAINSQL_DISPATCH(math, (add))
+int math::mult(int a, int b)
+{
+    return a * b;
+}

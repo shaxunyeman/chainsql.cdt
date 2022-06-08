@@ -16,12 +16,31 @@
                     "type": "int32"
                 }
             ]
+        },
+        {
+            "name": "mult",
+            "base": "",
+            "fields": [
+                {
+                    "name": "a",
+                    "type": "int32"
+                },
+                {
+                    "name": "b",
+                    "type": "int32"
+                }
+            ]
         }
     ],
     "actions": [
         {
             "name": "add",
             "type": "add",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "mult",
+            "type": "mult",
             "ricardian_contract": ""
         }
     ],
@@ -32,6 +51,10 @@
     "action_results": [
         {
             "name": "add",
+            "result_type": "int32"
+        },
+        {
+            "name": "mult",
             "result_type": "int32"
         }
     ]
