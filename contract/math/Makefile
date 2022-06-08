@@ -15,7 +15,7 @@ HEADER=$(NAME).wasm.h
 
 FLAGS = -O3 --abigen
 
-all: $(HEADER)
+all: ${HEADER}
 
 clean:
 	rm -f $(HEADER) $(WASM) ${ABI}

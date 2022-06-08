@@ -26,7 +26,6 @@ struct abi_struct {
 struct abi_action {
    std::string name;
    std::string type;
-   std::string ricardian_contract;
    bool operator<(const abi_action& s) const { return name < s.name; }
 };
 

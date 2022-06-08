@@ -35,18 +35,13 @@
     "actions": [
         {
             "name": "add",
-            "type": "add",
-            "ricardian_contract": ""
+            "type": "add"
         },
         {
             "name": "mult",
-            "type": "mult",
-            "ricardian_contract": ""
+            "type": "mult"
         }
     ],
-    "tables": [],
-    "kv_tables": {},
-    "ricardian_clauses": [],
     "variants": [],
     "action_results": [
         {

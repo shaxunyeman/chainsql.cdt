@@ -243,7 +243,7 @@ struct generation_utils {
       simple_ricardian_tokenizer srt(contracts);
       if (contracts.empty()) {
          if (!suppress_ricardian_warnings) {
-            std::cout << "Warning, empty ricardian clause file\n";
+            //std::cout << "Warning, empty ricardian clause file\n";
          }
          return rcs;
       }
@@ -261,7 +261,7 @@ struct generation_utils {
       simple_ricardian_tokenizer srt(clauses);
       if (clauses.empty()) {
          if (!suppress_ricardian_warnings) {
-            std::cout << "Warning, empty ricardian clause file\n";
+            //std::cout << "Warning, empty ricardian clause file\n";
          }
          return clause_pairs;
       }
