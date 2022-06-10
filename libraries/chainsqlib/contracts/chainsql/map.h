@@ -467,7 +467,7 @@ namespace chainsql::kv {
     {
     public:
         constexpr static inline uint8_t magic = 1;
-        constexpr static inline name table_name = name{static_cast<uint64_t>(TableName)};;
+        constexpr static inline name table_name = name{static_cast<uint64_t>(TableName)};
         using key_t = K;
         using value_t = V;
         using self_t = map<TableName, K, V>;
