@@ -1,0 +1,56 @@
+{
+    "____comment": "This file was generated with chainsql-abigen. DO NOT EDIT ",
+    "version": "chainsql::abi/1.2",
+    "types": [],
+    "structs": [
+        {
+            "name": "add",
+            "base": "",
+            "fields": [
+                {
+                    "name": "a",
+                    "type": "int32"
+                },
+                {
+                    "name": "b",
+                    "type": "int32"
+                }
+            ]
+        },
+        {
+            "name": "mult",
+            "base": "",
+            "fields": [
+                {
+                    "name": "a",
+                    "type": "int32"
+                },
+                {
+                    "name": "b",
+                    "type": "int32"
+                }
+            ]
+        }
+    ],
+    "actions": [
+        {
+            "name": "add",
+            "type": "add"
+        },
+        {
+            "name": "mult",
+            "type": "mult"
+        }
+    ],
+    "variants": [],
+    "action_results": [
+        {
+            "name": "add",
+            "result_type": "int32"
+        },
+        {
+            "name": "mult",
+            "result_type": "int32"
+        }
+    ]
+}

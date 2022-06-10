@@ -4,15 +4,15 @@
     "types": [],
     "structs": [
         {
-            "name": "hi",
+            "name": "test",
             "base": "",
             "fields": []
         }
     ],
     "actions": [
         {
-            "name": "hi",
-            "type": "hi"
+            "name": "test",
+            "type": "test"
         }
     ],
     "variants": [],

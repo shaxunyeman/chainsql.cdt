@@ -22,7 +22,7 @@ namespace chainsql::kv {
                            const void *value, uint32_t value_size);
             
              __attribute__((chainsql_wasm_import))
-            /*bool*/int32_t kv_get(const void *key, uint32_t key_size, uint32_t &value_size);
+            /*bool*/int32_t kv_get(const void *key, uint32_t key_size, uint32_t *value_size);
 
              __attribute__((chainsql_wasm_import))
             uint32_t kv_get_data(uint32_t offset, void *data, uint32_t data_size);
@@ -47,20 +47,20 @@ namespace chainsql::kv {
             int32_t kv_it_move_to_end(uint64_t itr);
 
              __attribute__((chainsql_wasm_import))
-            int32_t kv_it_next(uint64_t itr, uint32_t &found_key_size, uint32_t &found_value_size);
+            int32_t kv_it_next(uint64_t itr, uint32_t *found_key_size, uint32_t *found_value_size);
 
              __attribute__((chainsql_wasm_import))
-            int32_t kv_it_prev(uint64_t itr, uint32_t &found_key_size, uint32_t &found_value_size);
+            int32_t kv_it_prev(uint64_t itr, uint32_t *found_key_size, uint32_t *found_value_size);
 
              __attribute__((chainsql_wasm_import))
             int32_t kv_it_lower_bound(uint64_t itr, const void *key, uint32_t size,
-                                      uint32_t &found_key_size, uint32_t &found_value_size);
+                                      uint32_t *found_key_size, uint32_t *found_value_size);
             
              __attribute__((chainsql_wasm_import))
-            int32_t kv_it_key(uint64_t itr, uint32_t offset, void *dest, uint32_t size, uint32_t &actual_size);
+            int32_t kv_it_key(uint64_t itr, uint32_t offset, void *dest, uint32_t size, uint32_t *actual_size);
 
              __attribute__((chainsql_wasm_import))
-            int32_t kv_it_value(uint64_t itr, uint32_t offset, void *dest, uint32_t size, uint32_t &actual_size);
+            int32_t kv_it_value(uint64_t itr, uint32_t offset, void *dest, uint32_t size, uint32_t *actual_size);
         }
     }
 
@@ -110,39 +110,39 @@ namespace chainsql::kv {
         inline int32_t itr_compare(uint64_t a, uint64_t b) { return internal_use_do_not_use::kv_it_compare(a, b); }
         inline int32_t itr_key_compare(uint64_t itr, std::string_view k) { return internal_use_do_not_use::kv_it_key_compare(itr, k.data(), k.size()); }
         inline int32_t itr_move_to_end(uint64_t itr) { return internal_use_do_not_use::kv_it_move_to_end(itr); }
-        inline int32_t itr_key(uint64_t itr, char *dest, uint32_t size, uint32_t &actual_size) { return internal_use_do_not_use::kv_it_key(itr, 0, dest, size, actual_size); }
-        inline int32_t itr_value(uint64_t itr, char *dest, uint32_t size, uint32_t &actual_size) { return internal_use_do_not_use::kv_it_value(itr, 0, dest, size, actual_size); }
+        inline int32_t itr_key(uint64_t itr, char *dest, uint32_t size, uint32_t &actual_size) { return internal_use_do_not_use::kv_it_key(itr, 0, dest, size, &actual_size); }
+        inline int32_t itr_value(uint64_t itr, char *dest, uint32_t size, uint32_t &actual_size) { return internal_use_do_not_use::kv_it_value(itr, 0, dest, size, &actual_size); }
         inline int32_t itr_next(uint64_t itr, uint32_t &key_size, uint32_t &val_size)
         {
-            return internal_use_do_not_use::kv_it_next(itr, key_size, val_size);
+            return internal_use_do_not_use::kv_it_next(itr, &key_size, &val_size);
         }
         inline int32_t itr_next(uint64_t itr)
         {
             uint32_t k, v;
-            return internal_use_do_not_use::kv_it_next(itr, k, v);
+            return internal_use_do_not_use::kv_it_next(itr, &k, &v);
         }
         inline int32_t itr_prev(uint64_t itr, uint32_t &key_size, uint32_t &val_size)
         {
-            return internal_use_do_not_use::kv_it_prev(itr, key_size, val_size);
+            return internal_use_do_not_use::kv_it_prev(itr, &key_size, &val_size);
         }
         inline int32_t itr_prev(uint64_t itr)
         {
             uint32_t k, v;
-            return internal_use_do_not_use::kv_it_prev(itr, k, v);
+            return internal_use_do_not_use::kv_it_prev(itr, &k, &v);
         }
         inline int32_t itr_lower_bound(uint64_t itr, std::string_view k, uint32_t &key_size, uint32_t &val_size)
         {
-            return internal_use_do_not_use::kv_it_lower_bound(itr, k.data(), k.size(), key_size, val_size);
+            return internal_use_do_not_use::kv_it_lower_bound(itr, k.data(), k.size(), &key_size, &val_size);
         }
         inline int32_t itr_lower_bound(uint64_t itr, std::string_view k)
         {
             uint32_t _k, _v;
-            return internal_use_do_not_use::kv_it_lower_bound(itr, k.data(), k.size(), _k, _v);
+            return internal_use_do_not_use::kv_it_lower_bound(itr, k.data(), k.size(), &_k, &_v);
         }
         inline int32_t itr_lower_bound(uint64_t itr)
         {
             uint32_t _k, _v;
-            return internal_use_do_not_use::kv_it_lower_bound(itr, "", 0, _k, _v);
+            return internal_use_do_not_use::kv_it_lower_bound(itr, "", 0, &_k, &_v);
         }
 
         /**
@@ -467,7 +467,7 @@ namespace chainsql::kv {
     {
     public:
         constexpr static inline uint8_t magic = 1;
-        constexpr static inline name table_name = name{static_cast<uint64_t>(TableName)};;
+        constexpr static inline name table_name = name{static_cast<uint64_t>(TableName)};
         using key_t = K;
         using value_t = V;
         using self_t = map<TableName, K, V>;
@@ -655,7 +655,7 @@ namespace chainsql::kv {
             using namespace internal_use_do_not_use;
             uint32_t _vs;
             auto fk = full_key(k);
-            return static_cast<bool>(kv_get(fk.data(), fk.size(), _vs));
+            return static_cast<bool>(kv_get(fk.data(), fk.size(), &_vs));
         }
 
         bool raw_write(const key_t &k, std::string_view bytes) const
@@ -699,7 +699,7 @@ namespace chainsql::kv {
         {
             using namespace internal_use_do_not_use;
             uint32_t sz;
-            if (!kv_get(k.data(), k.size(), sz))
+            if (!kv_get(k.data(), k.size(), &sz))
                 return {nullptr, std::move(k)};
 
             auto val_bytes = get_tmp_buffer(sz);

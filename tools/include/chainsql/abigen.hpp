@@ -68,15 +68,12 @@ namespace chainsql { namespace cdt {
          abi_action ret;
          auto action_name = decl->getChainSQLActionAttr()->getName();
 
-         if (!checked_actions.insert(get_action_name(decl)).second)
-            CDT_CHECK_WARN(!rcs[get_action_name(decl)].empty(), "abigen_warning", decl->getLocation(), "Action <"+get_action_name(decl)+"> does not have a ricardian contract");
+         checked_actions.insert(get_action_name(decl));
 
          if (!suppress_ricardian_warnings)
             if (rcs[get_action_name(decl)].empty())
                // TODO:
-               std::cout << "Warning, action <"+get_action_name(decl)+"> does not have a ricardian contract\n";
-
-         ret.ricardian_contract = rcs[get_action_name(decl)];
+               //std::cout << "Warning, action <"+get_action_name(decl)+"> does not have a ricardian contract\n";
 
          if (action_name.empty()) {
             validate_name(decl->getName().str(), [&](auto s) { CDT_ERROR("abigen_error", decl->getLocation(), s); });
@@ -95,15 +92,12 @@ namespace chainsql { namespace cdt {
 
          auto action_name = decl->getChainSQLActionAttr()->getName();
 
-         if (!checked_actions.insert(get_action_name(decl)).second)
-            CDT_CHECK_WARN(!rcs[get_action_name(decl)].empty(), "abigen_warning", decl->getLocation(), "Action <"+get_action_name(decl)+"> does not have a ricardian contract");
+         checked_actions.insert(get_action_name(decl));
 
          if (!suppress_ricardian_warnings)
             if (rcs[get_action_name(decl)].empty())
                // TODO
-               std::cout << "Warning, action <"+get_action_name(decl)+"> does not have a ricardian contract\n";
-
-         ret.ricardian_contract = rcs[get_action_name(decl)];
+               //std::cout << "Warning, action <"+get_action_name(decl)+"> does not have a ricardian contract\n";
 
          if (action_name.empty()) {
             validate_name( decl->getNameAsString(), [&](auto s) { CDT_ERROR("abigen_error", decl->getLocation(), s); } );
@@ -662,7 +656,6 @@ namespace chainsql { namespace cdt {
          ojson o;
          o["name"] = a.name;
          o["type"] = a.type;
-         o["ricardian_contract"] = a.ricardian_contract;
          return o;
       }
 

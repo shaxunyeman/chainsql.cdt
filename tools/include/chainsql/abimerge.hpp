@@ -30,9 +30,6 @@ class ABIMerger {
          ret["types"]    = merge_types(other);
          ret["structs"]  = merge_structs(other);
          ret["actions"]  = merge_actions(other);
-         ret["tables"]   = merge_tables(other);
-         ret["kv_tables"] = merge_kv_tables(other);
-         ret["ricardian_clauses"]  = merge_clauses(other);
          ret["variants"] = merge_variants(other);
          std::string vers = abi["version"].as<std::string>();
          if (std::stod(vers.substr(vers.size()-3))*10 >= 12) {
@@ -71,14 +68,11 @@ class ABIMerger {
 
       static bool action_is_same(ojson a, ojson b) {
          return a["name"] == b["name"] &&
-                a["type"] == b["type"] &&
-                a["ricardian_contract"] == b["ricardian_contract"];
+                a["type"] == b["type"];
       }
 
       template <typename T>
       static bool action_is_almost_same(ojson a, ojson b, T& rc) {
-         if (a["ricardian_contract"].empty())
-            rc = b["ricardian_contract"];
          return a["name"] == b["name"] &&
                 a["type"] == b["type"];
       }

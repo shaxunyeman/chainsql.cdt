@@ -92,6 +92,4 @@ configure_file(${CMAKE_SOURCE_DIR}/tools/external/wabt/LICENSE ${CMAKE_BINARY_DI
 configure_file(${CMAKE_SOURCE_DIR}/tools/jsoncons/LICENSE ${CMAKE_BINARY_DIR}/licenses/jsoncons.license COPYONLY)
 configure_file(${CMAKE_SOURCE_DIR}/LICENSE ${CMAKE_BINARY_DIR}/licenses/chainsql.cdt.license COPYONLY)
 
-#add_subdirectory(vm)
-#add_subdirectory(wasm3)
-#add_subdirectory(example)
+add_subdirectory(simulator)

@@ -1,5 +1,5 @@
-#include "chainsqlib/core/chainsql/check.h"
-#include "chainsqlib/contracts/chainsql/contract.h"
+#include <chainsql/contract.h>
+#include <chainsql/print.h>
 
 class [[chainsql::contract]] hello : public chainsql::contract {
 public:
@@ -8,12 +8,6 @@ public:
     [[chainsql::action]]
     void hi()
     {
-    }
-
-private:
-    void echo(const char *s)
-    {
+        chainsql::print("hello peersafe\n");
     }
 };
-
-//CHAINSQL_DISPATCH(hello, (hi))
