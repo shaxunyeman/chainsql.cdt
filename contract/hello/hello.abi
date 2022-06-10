@@ -12,13 +12,9 @@
     "actions": [
         {
             "name": "hi",
-            "type": "hi",
-            "ricardian_contract": ""
+            "type": "hi"
         }
     ],
-    "tables": [],
-    "kv_tables": {},
-    "ricardian_clauses": [],
     "variants": [],
     "action_results": []
 }

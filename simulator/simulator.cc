@@ -5,6 +5,7 @@
 
 #include "simulator/vm/chainsqlWasmVm.h"
 #include "simulator/vm/actionCallback.h"
+#include "simulator/vm/print.h"
 #include "simulator/common/name.h"
 #include "simulator/common/datastream.h"
 
@@ -39,6 +40,8 @@ void execute_math_contract()
     std::function<void(int32_t, int64_t)> assert_code_fn = [&](int32_t, int64_t) {
     };
     mod.link_optional("*", "chainsql_assert_code", &assert_code_fn);
+    chainsql::link_print(mod);
+
 
     // import functions to a specified action
     chainsql::actionCallback<int> cb(action, mod);
