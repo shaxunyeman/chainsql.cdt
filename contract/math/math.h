@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <stdarg.h>
 
-#include "chainsqlib/contracts/chainsql/contract.h"
+#include <chainsql/contract.h>
 
 class [[chainsql::contract]] math : public chainsql::contract {
 public:
