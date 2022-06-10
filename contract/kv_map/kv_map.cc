@@ -1,5 +1,7 @@
-#include "chainsqlib/contracts/contract.h"
-#include "chainsqlib/contracts/map.h"
+#include <chainsql/contract.h>
+#include <chainsql/map.h>
+#include <chainsql/check.h>
+#include <chainsql/print.h>
 
 struct person {
     std::string name;
@@ -7,41 +9,31 @@ struct person {
     int age;
 };
 
-class kv_map : public chainsql::contract {
+class [[chainsql::contract]] kv_map : public chainsql::contract {
 public:
     using contract::contract;
 
-    void insert(int id, std::string name, std::string title, int age) {
-        person p = {name, title, age};
-        persons[id] = p;
-    }
+    [[chainsql::action]]
+    void test() {
+        persons[1] = {"peersafe", "inc", 10};
+        persons[2] = {"zongxiang", "inc", 12};
 
-    void update(int id, std::string name) {
-        auto it = persons.find(id);
-        if it != persons.end() {
-            it->name = name;
+        chainsql::check(persons.contains(1), "persion's 1 exits");
+        chainsql::check(persons.contains(2), "persion's 2 exits");
+
+        chainsql::check(persons.contains(3) == false, "persion's 3 not exits");
+
+        {
+            person p = persons[1].element.value;
+            chainsql::print_f("1: name = %, title = %, age = % \n", p.name, p.title, p.age);
+        }
+
+        {
+            person p = persons[2].element.value;
+            chainsql::print_f("2: name = %, title = %, age = % \n", p.name, p.title, p.age);
         }
     }
 
-    void erase(int id) {
-        auto it = persons.find(id);
-        if(it != persons.end()) {
-            persons.erase(id);
-        }
-    }
-
-    person get(int id) {
-        return persons.find(id)->second;
-    }
-
-    void show() {
-        for(auto it = persons.begin(); it != persons.end(); it++) {
-            chainsql::printf("id = %d, name = %s, title = %s, age = %d\n"
-            it->first, it->second.name, it->second.title, it->second.age);
-        }
-    }
 private:
     chainsql::kv::map<chainsql::name("person"), int, person> persons;
 };
-
-CHAINSQL_DISPATCH(kv_map, (insert)(update)(erase)(get)(show))

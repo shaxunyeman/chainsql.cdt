@@ -58,6 +58,10 @@ namespace wasm3 {
         template<> struct m3_type_to_sig<double>  : m3_sig<'F'> {};
         template<> struct m3_type_to_sig<void>    : m3_sig<'v'> {};
         template<> struct m3_type_to_sig<void *>  : m3_sig<'*'> {};
+        template<> struct m3_type_to_sig<int32_t*> : m3_sig<'*'> {};
+        template<> struct m3_type_to_sig<int64_t*> : m3_sig<'*'> {};
+        template<> struct m3_type_to_sig<uint32_t*> : m3_sig<'*'> {};
+        template<> struct m3_type_to_sig<uint64_t*> : m3_sig<'*'> {};
         template<> struct m3_type_to_sig<const void *> : m3_sig<'*'> {};
         template<> struct m3_type_to_sig<char *>  : m3_sig<'*'> {};
         template<> struct m3_type_to_sig<const char *> : m3_sig<'*'> {};

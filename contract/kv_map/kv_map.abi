@@ -1,0 +1,20 @@
+{
+    "____comment": "This file was generated with chainsql-abigen. DO NOT EDIT ",
+    "version": "chainsql::abi/1.2",
+    "types": [],
+    "structs": [
+        {
+            "name": "test",
+            "base": "",
+            "fields": []
+        }
+    ],
+    "actions": [
+        {
+            "name": "test",
+            "type": "test"
+        }
+    ],
+    "variants": [],
+    "action_results": []
+}

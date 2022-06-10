@@ -1,8 +1,12 @@
+#pragma once
+
 #include <stdint.h>
 #include <map>
 #include <tuple>
 #include <vector>
 #include <string>
+
+#include <wasm3_cpp.h>
 
 using key_type = uint64_t;
 using value_type = std::map<std::string, std::string>;
@@ -28,9 +32,6 @@ value_iterator __IT__;
 extern "C"
 {
     uint64_t contract = 100;
-    void chainsql_assert(int32_t test, const void *msg)
-    {
-    }
 
     uint64_t chainsql_contract_address()
     {
@@ -62,7 +63,7 @@ extern "C"
         return 0;
     }
 
-    /*bool*/ int32_t kv_get(const void *key, uint32_t key_size, uint32_t &value_size)
+    /*bool*/ int32_t kv_get(const void *key, uint32_t key_size, uint32_t *value_size)
     {
         int ret = 0;
         do {
@@ -73,7 +74,7 @@ extern "C"
             auto key_it = it->second.find(key_str);
             if (key_it == it->second.end())
                 break;
-            value_size = key_it->second.size();
+            *value_size = key_it->second.size();
             __IT__ = key_it;
             ret = 1;
         } while(0);
@@ -146,7 +147,7 @@ extern "C"
         return -2;
     }
 
-    int32_t kv_it_next(uint64_t itr, uint32_t &found_key_size, uint32_t &found_value_size)
+    int32_t kv_it_next(uint64_t itr, uint32_t *found_key_size, uint32_t *found_value_size)
     {
         HANDLE(itr)
         if(handle->index == handle->map->end()) {
@@ -157,13 +158,13 @@ extern "C"
             return -1;
         }
         
-        found_key_size = handle->index->first.size();
-        found_value_size = handle->index->second.size();
+        *found_key_size = handle->index->first.size();
+        *found_value_size = handle->index->second.size();
         
         return 0;
     }
 
-    int32_t kv_it_prev(uint64_t itr, uint32_t &found_key_size, uint32_t &found_value_size)
+    int32_t kv_it_prev(uint64_t itr, uint32_t *found_key_size, uint32_t *found_value_size)
     {
         HANDLE(itr)
         if(handle->index == handle->map->begin()) {
@@ -175,20 +176,20 @@ extern "C"
             return -1;
         }
         
-        found_key_size = handle->index->first.size();
-        found_value_size = handle->index->second.size();
+        *found_key_size = handle->index->first.size();
+        *found_value_size = handle->index->second.size();
         
         return 0;
     }
 
     int32_t kv_it_lower_bound(uint64_t itr, const void *key, uint32_t size,
-                              uint32_t &found_key_size, uint32_t &found_value_size)
+                              uint32_t *found_key_size, uint32_t *found_value_size)
     {
         HANDLE(itr)
         if (size == 0) {
             handle->index = handle->map->begin();
-            found_key_size = handle->index->first.size();
-            found_value_size = handle->index->second.size();
+            *found_key_size = handle->index->first.size();
+            *found_value_size = handle->index->second.size();
             return 0;
         }
         
@@ -197,12 +198,12 @@ extern "C"
         if(handle->index == handle->map->end()) {
             return -1;
         }
-        found_key_size = handle->index->first.size();
-        found_value_size = handle->index->second.size();
+        *found_key_size = handle->index->first.size();
+        *found_value_size = handle->index->second.size();
         return 0;
     }
 
-    int32_t kv_it_key(uint64_t itr, uint32_t offset, void *dest, uint32_t size, uint32_t &actual_size)
+    int32_t kv_it_key(uint64_t itr, uint32_t offset, void *dest, uint32_t size, uint32_t *actual_size)
     {
         HANDLE(itr)
         uint32_t prefix_size = handle->prefix.size();
@@ -210,18 +211,39 @@ extern "C"
         if(size >= key.size()) {
             std::memcpy(dest, key.c_str(), key.size());
         }
-        actual_size = key.size();
+        *actual_size = key.size();
         return handle->index == handle->map->end() ? -1 : 0;
     }
 
-    int32_t kv_it_value(uint64_t itr, uint32_t offset, void *dest, uint32_t size, uint32_t &actual_size)
+    int32_t kv_it_value(uint64_t itr, uint32_t offset, void *dest, uint32_t size, uint32_t *actual_size)
     {
         HANDLE(itr)
         std::string value = handle->index->second;
         if(size >= value.size()) {
             std::memcpy(dest, value.c_str(), value.size());
         }
-        actual_size = value.size();
+        *actual_size = value.size();
         return handle->index == handle->map->end() ? -1 : 0;
+    }
+}
+
+namespace chainsql {
+    void link_map(wasm3::module &mod) {
+        //mod.link_optional("*", "chainsql_contract_address", chainsql_contract_address);
+        mod.link_optional("*", "kv_set", kv_set);
+        mod.link_optional("*", "kv_get", kv_get);
+        mod.link_optional("*", "kv_get_data", kv_get_data);
+        mod.link_optional("*", "kv_erase", kv_erase);
+        mod.link_optional("*", "kv_it_create", kv_it_create);
+        mod.link_optional("*", "kv_it_destroy", kv_it_destroy);
+        mod.link_optional("*", "kv_it_status", kv_it_status);
+        mod.link_optional("*", "kv_it_compare", kv_it_compare);
+        mod.link_optional("*", "kv_it_key_compare", kv_it_key_compare);
+        mod.link_optional("*", "kv_it_move_to_end", kv_it_move_to_end);
+        mod.link_optional("*", "kv_it_next", kv_it_next);
+        mod.link_optional("*", "kv_it_prev", kv_it_prev);
+        mod.link_optional("*", "kv_it_lower_bound", kv_it_lower_bound);
+        mod.link_optional("*", "kv_it_key", kv_it_key);
+        mod.link_optional("*", "kv_it_value", kv_it_value);
     }
 }
