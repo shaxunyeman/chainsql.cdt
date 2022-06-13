@@ -4,17 +4,93 @@
     "types": [],
     "structs": [
         {
-            "name": "test",
+            "name": "get",
+            "base": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "int32"
+                }
+            ]
+        },
+        {
+            "name": "insert",
+            "base": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "int32"
+                },
+                {
+                    "name": "name",
+                    "type": "string"
+                },
+                {
+                    "name": "title",
+                    "type": "string"
+                },
+                {
+                    "name": "age",
+                    "type": "int32"
+                }
+            ]
+        },
+        {
+            "name": "person",
+            "base": "",
+            "fields": [
+                {
+                    "name": "name",
+                    "type": "string"
+                },
+                {
+                    "name": "title",
+                    "type": "string"
+                },
+                {
+                    "name": "age",
+                    "type": "int32"
+                }
+            ]
+        },
+        {
+            "name": "testarray",
+            "base": "",
+            "fields": []
+        },
+        {
+            "name": "testkvmap",
             "base": "",
             "fields": []
         }
     ],
     "actions": [
         {
-            "name": "test",
-            "type": "test"
+            "name": "get",
+            "type": "get"
+        },
+        {
+            "name": "insert",
+            "type": "insert"
+        },
+        {
+            "name": "testarray",
+            "type": "testarray"
+        },
+        {
+            "name": "testkvmap",
+            "type": "testkvmap"
         }
     ],
     "variants": [],
-    "action_results": []
+    "action_results": [
+        {
+            "name": "get",
+            "result_type": "person"
+        },
+        {
+            "name": "insert",
+            "result_type": "int32"
+        }
+    ]
 }

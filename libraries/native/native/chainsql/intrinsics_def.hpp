@@ -38,16 +38,9 @@ namespace chainsql { namespace native {
 #define INTRINSICS(intrinsic_macro) \
 intrinsic_macro(chainsql_assert) \
 intrinsic_macro(chainsql_assert_message) \
-intrinsic_macro(get_tx_context) \
-intrinsic_macro(account_exists) \
 intrinsic_macro(get_balance) \
 intrinsic_macro(get_block_hash) \
-intrinsic_macro(emit_log) \
-intrinsic_macro(account_set) \
-intrinsic_macro(transfer_fee_set) \
-intrinsic_macro(trust_set) \
-intrinsic_macro(trust_limit) \
-intrinsic_macro(gateway_balance) \
+intrinsic_macro(msg_sender) \
 intrinsic_macro(pay)
 
 

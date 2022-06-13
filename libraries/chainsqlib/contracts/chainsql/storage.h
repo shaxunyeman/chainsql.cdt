@@ -43,7 +43,7 @@ namespace chainsql {
         kv::internal_use_do_not_use::kv_get(vecKey.data(), vecKey.size(), &len);
         if (len == 0){ return 0; }
         std::vector<char> vecValue(len);
-        kv::internal_use_do_not_use::kv_get_data(0, vecValue.data(), vecValue.size());
+        kv::internal_use_do_not_use::kv_get_data(vecKey.data(), vecKey.size(), 0, vecValue.data(), vecValue.size());
 
         datastream<char*> valueStream(vecValue.data(), vecValue.size());
         valueStream >> value;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <functional>
+#include <vector>
 
 #include <simulator/vm/actionCallback.h>
 #include <wasm3_cpp.h>
@@ -28,9 +29,7 @@ public:
         return fn.call<Ret>(args...);
     }
 
-    template <typename T>
-    T
-    apply(actionCallback<T>* cb)
+    std::vector<char> apply(actionCallback *cb)
     {
         invoke(
             "apply",

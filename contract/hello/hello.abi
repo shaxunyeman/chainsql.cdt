@@ -6,7 +6,12 @@
         {
             "name": "hi",
             "base": "",
-            "fields": []
+            "fields": [
+                {
+                    "name": "msg",
+                    "type": "string"
+                }
+            ]
         }
     ],
     "actions": [
