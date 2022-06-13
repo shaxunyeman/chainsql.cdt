@@ -33,11 +33,6 @@ extern "C"
 {
     uint64_t contract = 100;
 
-    uint64_t chainsql_contract_address()
-    {
-        return 0;
-    }
-
     int64_t kv_erase(const void *key, uint32_t key_size)
     {
         auto it = storage.find(contract);
@@ -81,7 +76,7 @@ extern "C"
         return ret;
     }
 
-    uint32_t kv_get_data(uint32_t offset, void *data, uint32_t data_size)
+    uint32_t kv_get_data(const void *key, uint32_t key_size, uint32_t offset, void *data, uint32_t data_size)
     {
         std::string c = __IT__->second;
         std::memcpy(data, c.c_str(), data_size);
@@ -229,7 +224,6 @@ extern "C"
 
 namespace chainsql {
     void link_map(wasm3::module &mod) {
-        //mod.link_optional("*", "chainsql_contract_address", chainsql_contract_address);
         mod.link_optional("*", "kv_set", kv_set);
         mod.link_optional("*", "kv_get", kv_get);
         mod.link_optional("*", "kv_get_data", kv_get_data);

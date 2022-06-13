@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <tuple>
+#include <vector>
 #include <exception>
 
 #include "simulator/vm/chainsqlWasmVm.h"
@@ -9,80 +10,154 @@
 #include "simulator/common/datastream.h"
 #include "simulator/vm/imports/print.h"
 #include "simulator/vm/imports/map.h"
+#include "simulator/vm/imports/system.h"
 
 #include "contract/math/math.wasm.h"
 #include "contract/kv_map/kv_map.wasm.h"
 
-void execute_math_contract()
-{
-    std::cout << "execute math contract, " << std::endl;
-    // serilize args
-    std::tuple<int, int> args = std::make_tuple(100, 200);
+struct contract {
+    std::string name;
+    std::string function;
     std::string payload;
-    payload.resize(2 * sizeof(int));
-    chainsql::datastream<char *> ds = chainsql::datastream<char *>(payload.data(), payload.size());
-    ds << args;
+    const uint8_t* wasm;
+    size_t wasm_size;
+};
 
+std::vector<char> execute_contract(const struct contract &c)
+{
     // initailize an action
-    chainsql::action action(chainsql::name("math"), chainsql::name("add"), payload);
-    chainsql::chainsqlWasmVm vm(5120);
-    wasm3::module mod = vm.loadWasm(math_wasm, math_wasm_len);
+    chainsql::action action(
+        chainsql::name(c.name), 
+        chainsql::name(c.function), 
+        c.payload);
 
-    // imports global functions into module
-    std::function<void(int32_t, const void *)> assert_fun = [&](int32_t test, const void *msg) {
-        std::string message((const char*)msg);
-        throw std::runtime_error(message);
-    };
-    mod.link("*", "chainsql_assert",  &assert_fun);
+    chainsql::chainsqlWasmVm vm(8096);
+    wasm3::module mod = vm.loadWasm(c.wasm, c.wasm_size);
 
-    std::function<void(int64_t)> contract_name_fn = [&](int64_t name) {
-    };
-    mod.link_optional("*", "chainsql_set_contract_name", &contract_name_fn);
-
-    std::function<void(int32_t, int64_t)> assert_code_fn = [&](int32_t, int64_t) {
-    };
-    mod.link_optional("*", "chainsql_assert_code", &assert_code_fn);
+    chainsql::link_system(mod);
     chainsql::link_print(mod);
     chainsql::link_map(mod);
 
-
     // import functions to a specified action
-    chainsql::actionCallback<int> cb(action, mod);
+    chainsql::actionCallback cb(action, mod);
     // invoke an action
-    int ret = vm.apply<int>(&cb);
-    std::cout << "result = " << ret << std::endl;
+    return  vm.apply(&cb);
+}
+
+void execute_math_contract()
+{
+    auto math_contract = [&](const std::string &name, const std::string &payload) -> int 
+    {
+        struct contract math = {
+            "math",
+            name,
+            payload,
+            math_wasm,
+            math_wasm_len};
+
+        auto vec = execute_contract(math);
+        int ret;
+        std::memcpy(&ret, &vec[0], sizeof ret);
+        return ret;
+    };
+
+    std::string payload;
+    payload.resize(2 * sizeof(int));
+    int a = 100;
+    int b = 200;
+    chainsql::datastream<char *> ds = chainsql::datastream<char *>(payload.data(), payload.size());
+    ds << a;
+    ds << b;
+
+    // test add in math
+    int ret = math_contract("add", payload);
+    assert(ret == 300);
+    std::cout << "invoke math.add successfully. " << std::endl;
+
+    // test mult in math
+    ret = math_contract("mult", payload);
+    assert(ret == 20000);
+    std::cout << "invoke math.mult successfully. " << std::endl;
+}
+
+struct person
+{
+    std::string name;
+    std::string title;
+    int age;
+};
+
+template <typename DataStream>
+inline DataStream &operator<<(DataStream &ds, const person &p)
+{
+    ds << p.name << p.title << p.age;
+    return ds;
+}
+
+template <typename DataStream>
+inline DataStream &operator>>(DataStream &ds, person &p)
+{
+    ds >> p.name >> p.title >> p.age;
+    return ds;
 }
 
 void execute_kv_map_contract() {
-    std::cout << "execute kv contract, " << std::endl;
-    std::string payload;
+   auto kv_map_contract = [&](const std::string &name, const std::string &payload) -> std::vector<char>
+    {
+        struct contract kv_map = {
+            "kv.map",
+            name,
+            payload,
+            kv_map_wasm,
+            kv_map_wasm_len};
 
-    // initailize an action
-    chainsql::action action(chainsql::name("kv.map"), chainsql::name("test"), payload);
-    chainsql::chainsqlWasmVm vm(8192);
-    wasm3::module mod = vm.loadWasm(kv_map_wasm, kv_map_wasm_len);
-
-    // imports global functions into module
-    std::function<void(int32_t, const void *)> assert_fun = [&](int32_t test, const void *msg) {
-        std::string message((const char*)msg);
-        throw std::runtime_error(message);
+        return execute_contract(kv_map);
     };
-    mod.link("*", "chainsql_assert",  &assert_fun);
 
-    std::function<void(int64_t)> contract_name_fn = [&](int64_t name) {
-    };
-    mod.link_optional("*", "chainsql_set_contract_name", &contract_name_fn);
+    kv_map_contract("testkvmap", "");
+    std::cout << "invoke kv_map.testkvmap successfully" << std::endl;
+    kv_map_contract("testarray", "");
+    std::cout << "invoke kv_map.testarray successfully" << std::endl;
 
-    std::function<void(int32_t, int64_t)> assert_code_fn = [&](int32_t, int64_t) {
-    };
-    mod.link_optional("*", "chainsql_assert_code", &assert_code_fn);
-    chainsql::link_print(mod);
-    chainsql::link_map(mod);
+    {
+        person p1 = {"zhangxiaofei", "actor", 30};
+        std::string payload;
+        payload.resize(1024);
+        chainsql::datastream<char *> ds = chainsql::datastream<char *>(payload.data(), payload.size());
+        ds << 3;
+        ds << p1.name << p1.title << p1.age;
+        kv_map_contract("insert", payload);
+    }
 
-    // import functions to a specified action
-    chainsql::actionCallback<void> cb(action, mod);
-    // invoke an action
-    vm.apply<void>(&cb);
+    {
+        person p1 = {"guodegang", "freetalker", 50};
+        std::string payload;
+        payload.resize(1024);
+        chainsql::datastream<char *> ds = chainsql::datastream<char *>(payload.data(), payload.size());
+        ds << 4;
+        ds << p1.name << p1.title << p1.age;
+        kv_map_contract("insert", payload);
+    }
+
+    {
+        std::string payload;
+        payload.resize(4);
+        chainsql::datastream<char *> ds = chainsql::datastream<char *>(payload.data(), payload.size());
+        ds << 3;
+        auto vec = kv_map_contract("get", payload);
+        person p = chainsql::unpack<person>(vec.data(), vec.size());
+        assert(p.name == "zhangxiaofei" && p.title == "actor" && p.age == 30);
+    }
+
+    {
+        std::string payload;
+        payload.resize(4);
+        chainsql::datastream<char *> ds = chainsql::datastream<char *>(payload.data(), payload.size());
+        ds << 4;
+        auto vec = kv_map_contract("get", payload);
+        person p = chainsql::unpack<person>(vec.data(), vec.size());
+        assert(p.name == "guodegang" && p.title == "freetalker" && p.age == 50);
+    }
 }
 
 int main(int argc, char** argv) {

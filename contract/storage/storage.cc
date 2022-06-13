@@ -1,6 +1,6 @@
 #include "chainsqlib/contracts/contract.h"
 #include "chainsqlib/contracts/storage.h"
-#include "chainsqlib/core/serialize.hpp"
+#include "chainsqlib/core/serialize.h"
 
 struct person {
     std::string name;

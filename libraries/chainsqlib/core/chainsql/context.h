@@ -1,12 +1,30 @@
 #pragma once
 
+#include "fixed_bytes.h"
+
 namespace chainsql {
     namespace internal_use_do_not_use
     {
+        struct __attribute__((aligned(16))) capi_account_id{ uint8_t address[20];};
 
          __attribute__((chainsql_wasm_import))
-        extern "C" uint64_t chainsql_contract_address();
+        extern "C" void get_contract_address(void* address);
+
+         __attribute__((chainsql_wasm_import))
+        extern "C" void msg_sender(void* address);
     }
 
-    inline uint64_t current_context_contract() { return internal_use_do_not_use::chainsql_contract_address(); }
+    inline account_id current_context_contract() 
+    { 
+        internal_use_do_not_use::capi_account_id address;
+        internal_use_do_not_use::get_contract_address(&address);
+        return {address.address};
+    }
+
+    inline account_id sender()
+    { 
+        internal_use_do_not_use::capi_account_id address;
+        internal_use_do_not_use::msg_sender(&address);
+        return {address.address};
+    }
 } // namespace chainsql
