@@ -32,7 +32,7 @@ std::vector<char> execute_contract(const struct contract &c)
         chainsql::name(c.function), 
         c.payload);
 
-    chainsql::chainsqlWasmVm vm(8096);
+    chainsql::chainsqlWasmVm vm(8192);
     wasm3::module mod = vm.loadWasm(c.wasm, c.wasm_size);
 
     chainsql::link_system(mod);
