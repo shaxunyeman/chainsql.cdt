@@ -12,6 +12,7 @@
 #include "simulator/vm/imports/map.h"
 #include "simulator/vm/imports/system.h"
 
+#include "contract/hello/hello.wasm.h"
 #include "contract/math/math.wasm.h"
 #include "contract/kv_map/kv_map.wasm.h"
 
@@ -31,7 +32,7 @@ std::vector<char> execute_contract(const struct contract &c)
         chainsql::name(c.function), 
         c.payload);
 
-    chainsql::chainsqlWasmVm vm(8096);
+    chainsql::chainsqlWasmVm vm(8192);
     wasm3::module mod = vm.loadWasm(c.wasm, c.wasm_size);
 
     chainsql::link_system(mod);
@@ -42,6 +43,28 @@ std::vector<char> execute_contract(const struct contract &c)
     chainsql::actionCallback cb(action, mod);
     // invoke an action
     return  vm.apply(&cb);
+}
+
+void execute_hello_contract()
+{
+    auto hello_contract = [&](const std::string &name, const std::string &payload) -> std::vector<char> 
+    {
+        struct contract hello = {
+            "hello",
+            name,
+            payload,
+            hello_wasm,
+            hello_wasm_len};
+
+        return execute_contract(hello);
+    };
+
+    std::string payload;
+    payload.resize(1024);
+    chainsql::datastream<char *> ds = chainsql::datastream<char *>(payload.data(), payload.size());
+    ds << "peersafe. I'm mr hello.";
+
+    hello_contract("hi", payload);
 }
 
 void execute_math_contract()
@@ -162,6 +185,7 @@ void execute_kv_map_contract() {
 
 int main(int argc, char** argv) {
     try {
+        execute_hello_contract();
         execute_math_contract();
         execute_kv_map_contract();
     }
