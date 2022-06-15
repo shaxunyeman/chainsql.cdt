@@ -41,36 +41,30 @@ struct project {
       if (!bare) {
          llvm::sys::fs::create_directory(path+"/src");
          llvm::sys::fs::create_directory(path+"/include");
-         llvm::sys::fs::create_directory(path+"/ricardian");
          llvm::sys::fs::create_directory(path+"/build");
       }
    }
 
    std::string cdt_root = "/usr/local";
-   const std::string cpp = "#include <@.hpp>\n"
+   const std::string cpp = "#include <@.h>\n"
                            "ACTION @::hi( name nm ) {\n"
                            "   /* fill in action body */\n"
                            "   print_f(\"Name : %\\n\",nm);\n"
                            "}";
 
-   const std::string hpp = "#include <chainsql/chainsql.hpp>\n"
+   const std::string hpp = "#include <chainsql/chainsql.h>\n"
                            "using namespace chainsql;\n\n"
                            "CONTRACT @ : public contract {\n"
                            "   public:\n"
                            "      using contract::contract;\n\n"
-                           "      ACTION hi( name nm );\n\n"
-                           "      using hi_action = action_wrapper<\"hi\"_n, &@::hi>;\n"
+                           "      ACTION void hi( name nm );\n\n"
                            "};";
-
-   const std::string ricardian = "<h1 class=\"contract\"> hi </h1>\n\n"
-                                 "Stub for hi action's ricardian contract";
 
    const std::string cmake = "project(@)\n\n"
                              "set(CHAINSQL_WASM_OLD_BEHAVIOR \"Off\")\n"
                              "find_package(chainsql.cdt)\n\n"
                              "add_contract( @ @ @.cpp )\n"
-                             "target_include_directories( @ PUBLIC ${CMAKE_SOURCE_DIR}/../include )\n"
-                             "target_ricardian_directory( @ ${CMAKE_SOURCE_DIR}/../ricardian )";
+                             "target_include_directories( @ PUBLIC ${CMAKE_SOURCE_DIR}/../include )";
 
    const std::string cmake_extern = "include(ExternalProject)\n"
                                     "# if no cdt root is given use default path\n"
@@ -96,7 +90,7 @@ struct project {
                                     "   - run the command 'make'\n\n"
                                     " - After build -\n"
                                     "   - The built smart contract is under the '@' directory in the 'build' directory\n"
-                                    "   - You can then do a 'set contract' action with 'cleos' and point in to the './build/@' directory\n\n"
+                                    "   - You can then post a transaction with chainsqld and point in to the './build/@' directory\n\n"
                                     " - Additions to CMake should be done to the CMakeLists.txt in the './src' directory and not in the top level CMakeLists.txt";
 
    const std::string readme_bare = " --- @ Project ---\n\n"
@@ -146,9 +140,9 @@ struct project {
    void write_hpp() {
       std::ofstream hpp_out;
       if (bare)
-         hpp_out.open(path+"/"+project_name+".hpp");
+         hpp_out.open(path+"/"+project_name+".h");
       else
-         hpp_out.open(path+"/include/"+project_name+".hpp");
+         hpp_out.open(path+"/include/"+project_name+".h");
       hpp_out << replace_name(hpp);
    }
    void write_cmake() {
@@ -162,14 +156,6 @@ struct project {
          std::ofstream cmake_out(path+"/CMakeLists.txt");
          cmake_out << replace_name(replace_cdt_root(cmake_extern));
       }
-   }
-   void write_ricardian() {
-      std::ofstream rc_out;
-      if (bare)
-         rc_out.open(path+"/"+project_name+".contracts.md");
-      else
-         rc_out.open(path+"/ricardian/"+project_name+".contracts.md");
-      rc_out << ricardian;
    }
    void write_readme() {
       std::ofstream readme_out(path+"/README.txt");
@@ -225,7 +211,7 @@ int main(int argc, const char **argv) {
       proj.write_cpp();
       proj.write_cmake();
       proj.write_cmake_extern();
-      proj.write_ricardian();
+      //proj.write_ricardian();
       proj.write_readme();
    } catch ( std::exception& e ) {
       std::cout << e.what() << "\n";

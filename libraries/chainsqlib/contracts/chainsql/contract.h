@@ -3,6 +3,9 @@
 #include <chainsqlib/core/chainsql/name.h>
 #include <chainsqlib/core/chainsql/datastream.h>
 
+#define CONTRACT class [[chainsql::contract]]
+#define ACTION   [[chainsql::action]]
+
 namespace chainsql
 {
     class contract
