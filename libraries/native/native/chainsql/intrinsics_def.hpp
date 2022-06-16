@@ -4,9 +4,9 @@
 #include <functional>
 #include <type_traits>
 
-#include <chainsqlib/capi/action.h>
-#include <chainsqlib/capi/system.h>
-#include <chainsqlib/capi/table.h>
+#include <chainsqlib/capi/chainsql/action.h>
+#include <chainsqlib/capi/chainsql/system.h>
+#include <chainsqlib/capi/chainsql/table.h>
 
 namespace chainsql { namespace native {
    template <typename... Args, size_t... Is>
