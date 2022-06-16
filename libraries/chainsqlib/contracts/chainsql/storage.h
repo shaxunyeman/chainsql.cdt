@@ -2,6 +2,8 @@
 
 #include <vector>
 
+#include "map.h"
+
 #include "chainsqlib/core/chainsql/datastream.h"
 #include "chainsqlib/core/chainsql/context.h"
 

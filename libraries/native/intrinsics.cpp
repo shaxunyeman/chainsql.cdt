@@ -13,7 +13,7 @@ extern "C" {
       return intrinsics::get().call<intrinsics::chainsql_assert_message>(test, msg, msg_len);
    }
 
-   unt32_t get_balance(const void* address)
+   uint64_t get_balance(const void* address)
    {
       return intrinsics::get().call<intrinsics::get_balance>(address);
    }
