@@ -10,6 +10,8 @@
 #include <functional>
 #include <type_traits>
 
+#include <reflect.h>
+
 namespace chainsql {
 
    /// @cond IMPLEMENTATIONS
@@ -269,9 +271,10 @@ namespace chainsql {
 
          /// @endcond
 
-      private:
+      public:
 
          std::array<word_t, num_words()> _data;
+         CDT_REFLECT(_data);
     };
 
   /// @cond IMPLEMENTATIONS

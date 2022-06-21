@@ -738,7 +738,7 @@ namespace chainsql::kv {
 
     private:
         value_t temp; // used for
-        //CDT_REFLECT(temp);
+        CDT_REFLECT(temp);
     };
 
 } // namespace chainsql::kv
