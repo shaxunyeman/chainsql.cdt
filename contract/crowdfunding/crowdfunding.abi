@@ -1,0 +1,61 @@
+{
+    "____comment": "This file was generated with chainsql-abigen. DO NOT EDIT ",
+    "version": "chainsql::abi/1.2",
+    "types": [],
+    "structs": [
+        {
+            "name": "complete",
+            "base": "",
+            "fields": []
+        },
+        {
+            "name": "donate",
+            "base": "",
+            "fields": []
+        },
+        {
+            "name": "getfunds",
+            "base": "",
+            "fields": []
+        },
+        {
+            "name": "init",
+            "base": "",
+            "fields": []
+        },
+        {
+            "name": "refund",
+            "base": "",
+            "fields": []
+        }
+    ],
+    "actions": [
+        {
+            "name": "complete",
+            "type": "complete"
+        },
+        {
+            "name": "donate",
+            "type": "donate"
+        },
+        {
+            "name": "getfunds",
+            "type": "getfunds"
+        },
+        {
+            "name": "init",
+            "type": "init"
+        },
+        {
+            "name": "refund",
+            "type": "refund"
+        }
+    ],
+    "variants": [],
+    "action_results": [
+        {
+            "name": "getfunds",
+            "result_type": "int64"
+        }
+    ]
+}
