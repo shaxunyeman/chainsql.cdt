@@ -87,6 +87,7 @@ public:
 
 	ACTION int64_t getfunds() const
 	{
+		chainsql::getState("current_funds", current_funds);
 		return current_funds;
 	}
 

@@ -3,6 +3,9 @@ ABI=$(NAME).abi
 SRC=$(NAME).cc
 WASM=$(NAME).wasm
 HEADER=$(NAME).wasm.h
+
+CC=gcc
+WASM2CODE=wasm2code
 #EMCC_FLAGS=-O3 -Wl,--no-entry -Wl,--export=apply -Wl,--allow-undefined \
 #			-s STANDALONE_WASM -s ERROR_ON_UNDEFINED_SYMBOLS=0 \
 #			-std=c++17 \
@@ -15,10 +18,13 @@ HEADER=$(NAME).wasm.h
 
 FLAGS = -O3 --abigen
 
-all: $(HEADER)
+all: $(HEADER) print
+
+print: $(WASM2CODE)
+	$(info $(shell ./$(WASM2CODE)))
 
 clean:
-	rm -f $(HEADER) $(WASM) ${ABI}
+	rm -f $(HEADER) $(WASM) $(ABI) $(WASM2CODE)
 
 .PHONY: all clean
 
@@ -30,3 +36,7 @@ $(WASM): $(SRC)
 
 $(HEADER): $(WASM)
 	xxd -i $< >$@
+
+$(WASM2CODE): $(WASM2CODE).c $(HEADER)
+	$(CC) $< -o $@
+
