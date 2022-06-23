@@ -16,7 +16,7 @@ WASM2CODE=wasm2code
 #			-I ../../libraries/boost/include	\
 #			-v
 
-FLAGS = -O3 --abigen
+FLAGS = -O3 --abigen -lrt -lsf
 
 all: $(HEADER) print
 
