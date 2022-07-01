@@ -11,7 +11,7 @@ This process created the file `CMakeCache.txt' and the directory `CMakeFiles'.
 Please delete them.")
 endif()
 
-project(wasmvm)
+project(chainsql_cdt)
 
 find_program(SCCACHE_FOUND sccache)
 if (SCCACHE_FOUND)
