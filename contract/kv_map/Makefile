@@ -4,7 +4,7 @@ SRC=$(NAME).cc
 WASM=$(NAME).wasm
 HEADER=$(NAME).wasm.h
 
-FLAGS = -O3 --abigen
+FLAGS = -O3 --abigen -lrt -lsf
 
 all: $(HEADER)
 

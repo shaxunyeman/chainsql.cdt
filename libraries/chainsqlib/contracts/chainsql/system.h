@@ -19,6 +19,10 @@ namespace chainsql {
 
             __attribute__((chainsql_wasm_import))
             void selfdestruct(void* to);
+
+            __attribute__((chainsql_wasm_import))
+            void pay(void* to, uint64_t drops);
+
         }
     }
     
@@ -37,5 +41,10 @@ namespace chainsql {
     void self_destruct(account_id &account)
     {
         return internal_use_do_not_use::selfdestruct(account.data());
+    }
+
+    void pay(account_id &to, int64_t drops)
+    {
+        return internal_use_do_not_use::pay(to.data(), drops);
     }
 } // namespace chainsql

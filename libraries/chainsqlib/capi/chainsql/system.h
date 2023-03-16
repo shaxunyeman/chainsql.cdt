@@ -33,6 +33,9 @@ extern "C"
     void msg_sender(void* address);
 
     __attribute__((chainsql_wasm_import))
+    int64_t msg_value();
+
+    __attribute__((chainsql_wasm_import))
     void pay(void* to, uint64_t drops);
 #ifdef __cplusplus
 }

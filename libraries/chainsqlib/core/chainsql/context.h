@@ -12,6 +12,9 @@ namespace chainsql {
 
          __attribute__((chainsql_wasm_import))
         extern "C" void msg_sender(void* address);
+
+         __attribute__((chainsql_wasm_import))
+        extern "C" int64_t msg_value();
     }
 
     inline account_id current_context_contract() 
@@ -26,5 +29,10 @@ namespace chainsql {
         internal_use_do_not_use::capi_account_id address;
         internal_use_do_not_use::msg_sender(&address);
         return {address.address};
+    }
+
+    inline int64_t value()
+    {
+        return internal_use_do_not_use::msg_value();
     }
 } // namespace chainsql
