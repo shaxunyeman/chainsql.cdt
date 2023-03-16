@@ -1,7 +1,7 @@
 [submodule "chainsql_llvm"]
 	path = chainsql_llvm
-	url = https://gitlab.peersafe.cn/chainsql/chainsql_llvm.git
+	url = https://github.com/shaxunyeman/chainsql_llvm.git
 	branch = develop
 [submodule "libraries/native/softfloat"]
 	path = libraries/native/softfloat
-	url = https://gitlab.peersafe.cn/chainsql/berkeley-softfloat-3.git
+	url = https://github.com/shaxunyeman/berkeley-softfloat-3.git
